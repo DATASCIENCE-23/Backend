@@ -1,5 +1,5 @@
-```mermaid
 erDiagram
+
     USER {
         int user_id PK
         string username
@@ -83,4 +83,3 @@ erDiagram
     MEDICAL_RECORD ||--o{ REPORT : contains
 
     USER ||--o{ AUDIT_LOG : generates
-```
