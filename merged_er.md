@@ -1,4 +1,4 @@
-mermaid
+```mermaid
 erDiagram
     %% ========================================
     %% PATIENT REGISTRATION & MANAGEMENT
@@ -936,3 +936,4 @@ erDiagram
     BUDGET ||--o{ BUDGET_LINE : contains
     ACCOUNT ||--o{ BUDGET_LINE : allocated_for
     ACCOUNT ||--o{ BANK_ACCOUNT : links_to
+```
