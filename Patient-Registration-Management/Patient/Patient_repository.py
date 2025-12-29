@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from Model.Patient import Patient
+from Patient.Patient_model import Patient
 
 class PatientRepository:
 

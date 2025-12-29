@@ -5,6 +5,7 @@ DATABASE_URL = "postgresql://user:password@localhost:5432/hospital_db"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 Base = declarative_base()
 
 def get_db():

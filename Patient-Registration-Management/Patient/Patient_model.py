@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Date, Boolean, Enum, UniqueConstraint
-from Configuration.database import Base
+from Patient.database import Base
 
 class Patient(Base):
     __tablename__ = "patients"
@@ -17,8 +17,10 @@ class Patient(Base):
     )
 
     blood_group = Column(
-        Enum("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-",
-             name="blood_group_enum"),
+        Enum(
+            "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-",
+            name="blood_group_enum"
+        ),
         nullable=False
     )
 
