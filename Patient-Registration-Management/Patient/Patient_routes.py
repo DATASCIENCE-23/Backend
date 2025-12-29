@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from controllers.patient_controller import router as patient_controller
+from Patient.Patient_controller import router as patient_controller
 
 router = APIRouter(
     prefix="/patients",
