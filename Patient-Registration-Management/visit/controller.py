@@ -1,54 +1,34 @@
-package visit
+# visit/controller.py
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
+from .models import Visit
+from .service import VisitService
+from .configuration import get_visit_service, get_db
 
-import (
-    "net/http"
-    "strconv"
+router = APIRouter()
 
-    "github.com/gin-gonic/gin"
-)
+@router.post("/", response_model=dict)
+def create_visit(visit: Visit, service: VisitService = Depends(get_visit_service)):
+    return service.create_visit(visit)
 
-type VisitController struct {
-    Service *VisitService
-}
+@router.get("/{visit_id}", response_model=dict)
+def get_visit(visit_id: int, service: VisitService = Depends(get_visit_service)):
+    visit = service.get_visit_by_id(visit_id)
+    if not visit:
+        raise HTTPException(status_code=404, detail="Visit not found")
+    return visit
 
-func (c *VisitController) CreateVisit(ctx *gin.Context) {
-    var visit Visit
-    if err := ctx.ShouldBindJSON(&visit); err != nil {
-        ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
-    err := c.Service.CreateVisit(&visit)
-    if err != nil {
-        ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
-    ctx.JSON(http.StatusCreated, visit)
-}
+@router.get("/", response_model=list)
+def get_all_visits(service: VisitService = Depends(get_visit_service)):
+    return service.get_all_visits()
 
-func (c *VisitController) GetVisitByID(ctx *gin.Context) {
-    id, _ := strconv.Atoi(ctx.Param("id"))
-    visit, err := c.Service.GetVisitByID(uint(id))
-    if err != nil {
-        ctx.JSON(http.StatusNotFound, gin.H{"error": "Visit not found"})
-        return
-    }
-    ctx.JSON(http.StatusOK, visit)
-}
+@router.put("/", response_model=dict)
+def update_visit(visit: Visit, service: VisitService = Depends(get_visit_service)):
+    return service.update_visit(visit)
 
-func (c *VisitController) GetAllVisits(ctx *gin.Context) {
-    visits, _ := c.Service.GetAllVisits()
-    ctx.JSON(http.StatusOK, visits)
-}
-
-func (c *VisitController) UpdateVisit(ctx *gin.Context) {
-    var visit Visit
-    ctx.ShouldBindJSON(&visit)
-    c.Service.UpdateVisit(&visit)
-    ctx.JSON(http.StatusOK, visit)
-}
-
-func (c *VisitController) DeleteVisit(ctx *gin.Context) {
-    id, _ := strconv.Atoi(ctx.Param("id"))
-    c.Service.DeleteVisit(uint(id))
-    ctx.JSON(http.StatusOK, gin.H{"message": "Visit deleted"})
-}
+@router.delete("/{visit_id}", response_model=dict)
+def delete_visit(visit_id: int, service: VisitService = Depends(get_visit_service)):
+    deleted = service.delete_visit(visit_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Visit not found")
+    return {"message": "Visit deleted"}
