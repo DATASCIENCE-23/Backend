@@ -1,14 +1,6 @@
-package visit
+# visit/routes.py
+from fastapi import APIRouter
+from .controller import router as visit_router
 
-import "github.com/gin-gonic/gin"
-
-func RegisterVisitRoutes(router *gin.Engine, controller *VisitController) {
-    visit := router.Group("/visits")
-    {
-        visit.POST("/", controller.CreateVisit)
-        visit.GET("/", controller.GetAllVisits)
-        visit.GET("/:id", controller.GetVisitByID)
-        visit.PUT("/", controller.UpdateVisit)
-        visit.DELETE("/:id", controller.DeleteVisit)
-    }
-}
+def register_visit_routes(app):
+    app.include_router(visit_router, prefix="/visits", tags=["Visits"])

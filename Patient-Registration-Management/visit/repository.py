@@ -1,31 +1,31 @@
-package visit
+# visit/repository.py
+from sqlalchemy.orm import Session
+from .models import Visit
 
-import "gorm.io/gorm"
+class VisitRepository:
+    def __init__(self, db: Session):
+        self.db = db
 
-type VisitRepository struct {
-    DB *gorm.DB
-}
+    def create_visit(self, visit: Visit):
+        self.db.add(visit)
+        self.db.commit()
+        self.db.refresh(visit)
+        return visit
 
-func (r *VisitRepository) CreateVisit(visit *Visit) error {
-    return r.DB.Create(visit).Error
-}
+    def get_visit_by_id(self, visit_id: int):
+        return self.db.query(Visit).filter(Visit.visit_id == visit_id).first()
 
-func (r *VisitRepository) GetVisitByID(id uint) (*Visit, error) {
-    var visit Visit
-    err := r.DB.First(&visit, id).Error
-    return &visit, err
-}
+    def get_all_visits(self):
+        return self.db.query(Visit).all()
 
-func (r *VisitRepository) GetAllVisits() ([]Visit, error) {
-    var visits []Visit
-    err := r.DB.Find(&visits).Error
-    return visits, err
-}
+    def update_visit(self, visit: Visit):
+        self.db.merge(visit)
+        self.db.commit()
+        return visit
 
-func (r *VisitRepository) UpdateVisit(visit *Visit) error {
-    return r.DB.Save(visit).Error
-}
-
-func (r *VisitRepository) DeleteVisit(id uint) error {
-    return r.DB.Delete(&Visit{}, id).Error
-}
+    def delete_visit(self, visit_id: int):
+        visit = self.get_visit_by_id(visit_id)
+        if visit:
+            self.db.delete(visit)
+            self.db.commit()
+        return visit

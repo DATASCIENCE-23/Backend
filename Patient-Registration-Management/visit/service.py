@@ -1,26 +1,23 @@
-package visit
+# visit/service.py
+from .repository import VisitRepository
+from .models import Visit
 
-type VisitService struct {
-    Repo *VisitRepository
-}
+class VisitService:
+    def __init__(self, repo: VisitRepository):
+        self.repo = repo
 
-func (s *VisitService) CreateVisit(visit *Visit) error {
-    visit.Status = "ACTIVE"
-    return s.Repo.CreateVisit(visit)
-}
+    def create_visit(self, visit: Visit):
+        visit.status = "ACTIVE"
+        return self.repo.create_visit(visit)
 
-func (s *VisitService) GetVisitByID(id uint) (*Visit, error) {
-    return s.Repo.GetVisitByID(id)
-}
+    def get_visit_by_id(self, visit_id: int):
+        return self.repo.get_visit_by_id(visit_id)
 
-func (s *VisitService) GetAllVisits() ([]Visit, error) {
-    return s.Repo.GetAllVisits()
-}
+    def get_all_visits(self):
+        return self.repo.get_all_visits()
 
-func (s *VisitService) UpdateVisit(visit *Visit) error {
-    return s.Repo.UpdateVisit(visit)
-}
+    def update_visit(self, visit: Visit):
+        return self.repo.update_visit(visit)
 
-func (s *VisitService) DeleteVisit(id uint) error {
-    return s.Repo.DeleteVisit(id)
-}
+    def delete_visit(self, visit_id: int):
+        return self.repo.delete_visit(visit_id)

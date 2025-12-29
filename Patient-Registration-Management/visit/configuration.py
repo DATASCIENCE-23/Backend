@@ -1,12 +1,12 @@
-package visit
+# visit/configuration.py
+from sqlalchemy.orm import Session
+from .repository import VisitRepository
+from .service import VisitService
+from .models import Base
+from fastapi import Depends
+from ..database import get_db  
 
-import (
-    "gorm.io/gorm"
-)
-
-func InitVisitModule(db *gorm.DB) *VisitController {
-    repo := &VisitRepository{DB: db}
-    service := &VisitService{Repo: repo}
-    controller := &VisitController{Service: service}
-    return controller
-}
+def get_visit_service(db: Session = Depends(get_db)):
+    repo = VisitRepository(db)
+    service = VisitService(repo)
+    return service
