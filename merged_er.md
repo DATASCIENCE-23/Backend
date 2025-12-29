@@ -1,3 +1,4 @@
+```mermaid
 erDiagram
     %% ========================================
     %% PATIENT REGISTRATION & MANAGEMENT
@@ -799,139 +800,140 @@ erDiagram
     %% ========================================
     
     %% Patient Relationships
-    PATIENT ||--o{ ADDRESS : has
-    PATIENT ||--o{ INSURANCE : has
-    INSURANCE_PROVIDER ||--o{ INSURANCE : provides
-    PATIENT ||--o{ APPOINTMENT : books
-    PATIENT ||--o{ WAITING_LIST : joins
-    PATIENT ||--o{ VISIT : has
-    PATIENT ||--o{ MEDICAL_RECORD : owns
-    PATIENT ||--o{ INVOICE : receives
-    PATIENT ||--o{ LAB_ORDER : requests
-    PATIENT ||--o{ PRESCRIPTION : receives
+    PATIENT ||--o{ ADDRESS : "has"
+    PATIENT ||--o{ INSURANCE : "has"
+    INSURANCE_PROVIDER ||--o{ INSURANCE : "provides"
+    PATIENT ||--o{ APPOINTMENT : "books"
+    PATIENT ||--o{ WAITING_LIST : "joins"
+    PATIENT ||--o{ VISIT : "has"
+    PATIENT ||--o{ MEDICAL_RECORD : "owns"
+    PATIENT ||--o{ INVOICE : "receives"
+    PATIENT ||--o{ LAB_ORDER : "requests"
+    PATIENT ||--o{ PRESCRIPTION : "receives"
     
     %% User & Role Relationships
-    USER ||--o{ USER_ROLE : assigned
-    ROLE ||--o{ USER_ROLE : includes
-    USER ||--o| DOCTOR : is
-    USER ||--o| PATIENT : is
-    USER ||--o| PHARMACIST : is
-    USER ||--o| LAB_TECHNICIAN : is
-    USER ||--o{ AUDIT_LOG : generates
-    DEPARTMENT ||--o{ USER : employs
+    USER ||--o{ USER_ROLE : "assigned"
+    ROLE ||--o{ USER_ROLE : "includes"
+    USER ||--o| DOCTOR : "is"
+    USER ||--o| PATIENT : "is"
+    USER ||--o| PHARMACIST : "is"
+    USER ||--o| LAB_TECHNICIAN : "is"
+    USER ||--o{ AUDIT_LOG : "generates"
+    DEPARTMENT ||--o{ USER : "employs"
     
     %% Doctor Relationships
-    SPECIALIZATION ||--o{ DOCTOR : categorizes
-    DOCTOR ||--o{ DOCTOR_SCHEDULE : defines
-    DOCTOR ||--o{ BLOCKED_SLOTS : blocks
-    USER ||--o{ BLOCKED_SLOTS : creates
-    DOCTOR ||--o{ APPOINTMENT : attends
-    DOCTOR ||--o{ WAITING_LIST : manages
-    DOCTOR ||--o{ VISIT : conducts
-    DOCTOR ||--o{ MEDICAL_RECORD : creates
-    DOCTOR ||--o{ LAB_ORDER : orders
-    DOCTOR ||--o{ PRESCRIPTION : writes
+    SPECIALIZATION ||--o{ DOCTOR : "categorizes"
+    DOCTOR ||--o{ DOCTOR_SCHEDULE : "defines"
+    DOCTOR ||--o{ BLOCKED_SLOTS : "blocks"
+    USER ||--o{ BLOCKED_SLOTS : "creates"
+    DOCTOR ||--o{ APPOINTMENT : "attends"
+    DOCTOR ||--o{ WAITING_LIST : "manages"
+    DOCTOR ||--o{ VISIT : "conducts"
+    DOCTOR ||--o{ MEDICAL_RECORD : "creates"
+    DOCTOR ||--o{ LAB_ORDER : "orders"
+    DOCTOR ||--o{ PRESCRIPTION : "writes"
     
     %% Appointment Relationships
-    APPOINTMENT ||--o{ APPOINTMENT_REMINDER : triggers
-    APPOINTMENT ||--o{ APPOINTMENT_HISTORY : logs
-    USER ||--o{ APPOINTMENT_HISTORY : makes
+    APPOINTMENT ||--o{ APPOINTMENT_REMINDER : "triggers"
+    APPOINTMENT ||--o{ APPOINTMENT_HISTORY : "logs"
+    USER ||--o{ APPOINTMENT_HISTORY : "makes"
     
     %% Visit & Admission
-    VISIT ||--o| ADMISSION : leads_to
-    WARD ||--o{ ADMISSION : accommodates
-    VISIT ||--o{ MEDICAL_RECORD : documented_in
+    VISIT ||--o| ADMISSION : "leads_to"
+    WARD ||--o{ ADMISSION : "accommodates"
+    VISIT ||--o{ MEDICAL_RECORD : "documented_in"
     
     %% Medical Records
-    MEDICAL_RECORD ||--o{ PRESCRIPTION : generates
-    MEDICAL_RECORD ||--o{ REPORT : contains
-    MEDICAL_RECORD ||--o{ LAB_ORDER : triggers
+    MEDICAL_RECORD ||--o{ PRESCRIPTION : "generates"
+    MEDICAL_RECORD ||--o{ REPORT : "contains"
+    MEDICAL_RECORD ||--o{ LAB_ORDER : "triggers"
     
     %% Prescription & Pharmacy
-    PRESCRIPTION ||--o{ PRESCRIPTION_ITEM : contains
-    MEDICINE ||--o{ PRESCRIPTION_ITEM : prescribed_as
-    PRESCRIPTION ||--o{ DISPENSE : fulfilled_by
-    MEDICINE ||--o{ MEDICINE_BATCH : batched_as
-    PHARMACIST ||--o{ DISPENSE : performs
-    DISPENSE ||--o{ DISPENSE_ITEM : includes
-    PRESCRIPTION_ITEM ||--o{ DISPENSE_ITEM : fulfilled_as
-    MEDICINE_BATCH ||--o{ DISPENSE_ITEM : sourced_from
+    PRESCRIPTION ||--o{ PRESCRIPTION_ITEM : "contains"
+    MEDICINE ||--o{ PRESCRIPTION_ITEM : "prescribed_as"
+    PRESCRIPTION ||--o{ DISPENSE : "fulfilled_by"
+    MEDICINE ||--o{ MEDICINE_BATCH : "batched_as"
+    PHARMACIST ||--o{ DISPENSE : "performs"
+    DISPENSE ||--o{ DISPENSE_ITEM : "includes"
+    PRESCRIPTION_ITEM ||--o{ DISPENSE_ITEM : "fulfilled_as"
+    MEDICINE_BATCH ||--o{ DISPENSE_ITEM : "sourced_from"
     
     %% Laboratory Relationships
-    LAB_ORDER ||--o{ LAB_ORDER_TEST : includes
-    LAB_TEST ||--o{ LAB_ORDER_TEST : ordered_as
-    LAB_ORDER ||--o| LAB_SCHEDULE : scheduled_as
-    LAB ||--o{ LAB_SCHEDULE : hosts
-    LAB_TECHNICIAN ||--o{ LAB_SCHEDULE : performs
-    LAB_ORDER_TEST ||--o| LAB_RESULT : produces
-    USER ||--o{ LAB_RESULT : verifies
-    LAB_ORDER ||--o| LAB_REPORT : summarized_in
-    USER ||--o{ LAB_REPORT : prepares
+    LAB_ORDER ||--o{ LAB_ORDER_TEST : "includes"
+    LAB_TEST ||--o{ LAB_ORDER_TEST : "ordered_as"
+    LAB_ORDER ||--o| LAB_SCHEDULE : "scheduled_as"
+    LAB ||--o{ LAB_SCHEDULE : "hosts"
+    LAB_TECHNICIAN ||--o{ LAB_SCHEDULE : "performs"
+    LAB_ORDER_TEST ||--o| LAB_RESULT : "produces"
+    USER ||--o{ LAB_RESULT : "verifies"
+    LAB_ORDER ||--o| LAB_REPORT : "summarized_in"
+    USER ||--o{ LAB_REPORT : "prepares"
     
     %% Billing & Invoice
-    INVOICE ||--o{ INVOICE_LINE_ITEM : contains
-    SERVICE_MASTER ||--o{ INVOICE_LINE_ITEM : billed_as
-    TAX ||--o{ SERVICE_MASTER : applies_to
-    INVOICE ||--o{ PAYMENT : settled_by
-    USER ||--o{ INVOICE : creates
-    USER ||--o{ PAYMENT : receives
-    BANK_ACCOUNT ||--o{ PAYMENT : credited_to
-    DISPENSE ||--o| INVOICE : billed_as
-    INVOICE ||--o| JOURNAL_ENTRY : generates
-    PAYMENT ||--o| JOURNAL_ENTRY : posts
+    INVOICE ||--o{ INVOICE_LINE_ITEM : "contains"
+    SERVICE_MASTER ||--o{ INVOICE_LINE_ITEM : "billed_as"
+    TAX ||--o{ SERVICE_MASTER : "applies_to"
+    INVOICE ||--o{ PAYMENT : "settled_by"
+    USER ||--o{ INVOICE : "creates"
+    USER ||--o{ PAYMENT : "receives"
+    BANK_ACCOUNT ||--o{ PAYMENT : "credited_to"
+    DISPENSE ||--o| INVOICE : "billed_as"
+    INVOICE ||--o| JOURNAL_ENTRY : "generates"
+    PAYMENT ||--o| JOURNAL_ENTRY : "posts"
     
     %% Vendor & Bills
-    VENDOR ||--o{ BILL : submits
-    BILL ||--o{ BILL_LINE : contains
-    ACCOUNT ||--o{ BILL_LINE : charged_to
-    BILL ||--o{ BILL_PAYMENT : settled_by
-    USER ||--o{ BILL_PAYMENT : makes
-    BILL ||--o| JOURNAL_ENTRY : recorded_as
-    BILL_PAYMENT ||--o| JOURNAL_ENTRY : posts
+    VENDOR ||--o{ BILL : "submits"
+    BILL ||--o{ BILL_LINE : "contains"
+    ACCOUNT ||--o{ BILL_LINE : "charged_to"
+    BILL ||--o{ BILL_PAYMENT : "settled_by"
+    USER ||--o{ BILL_PAYMENT : "makes"
+    BILL ||--o| JOURNAL_ENTRY : "recorded_as"
+    BILL_PAYMENT ||--o| JOURNAL_ENTRY : "posts"
     
     %% Inventory Relationships
-    CATEGORY ||--o{ ITEM : categorizes
-    ITEM ||--o{ STOCK : tracked_in
-    STORE_LOCATION ||--o{ STOCK : stores
-    SUPPLIER ||--o{ PURCHASE_ORDER : receives
-    USER ||--o{ PURCHASE_ORDER : creates
-    PURCHASE_ORDER ||--o{ PURCHASE_ORDER_ITEM : contains
-    ITEM ||--o{ PURCHASE_ORDER_ITEM : ordered_as
-    PURCHASE_ORDER ||--o{ GOODS_RECEIPT : received_as
-    USER ||--o{ GOODS_RECEIPT : receives
-    DEPARTMENT ||--o{ ISSUE_REQUEST : raises
-    USER ||--o{ ISSUE_REQUEST : requests
-    USER ||--o{ ISSUE_REQUEST : approves
-    ISSUE_REQUEST ||--o{ ISSUE_DETAILS : contains
-    ITEM ||--o{ ISSUE_DETAILS : issued_as
-    USER ||--o{ ISSUE_DETAILS : issues
-    STORE_LOCATION ||--o{ STOCK_TRANSFER : from
-    STORE_LOCATION ||--o{ STOCK_TRANSFER : to
-    ITEM ||--o{ STOCK_TRANSFER : transferred
-    USER ||--o{ STOCK_TRANSFER : initiates
-    USER ||--o{ STOCK_TRANSFER : approves
-    ITEM ||--o{ STOCK_ADJUSTMENT : adjusted
-    STORE_LOCATION ||--o{ STOCK_ADJUSTMENT : location
-    USER ||--o{ STOCK_ADJUSTMENT : performs
-    STORE_LOCATION ||--o{ STOCK_AUDIT : audited
-    USER ||--o{ STOCK_AUDIT : conducts
-    STOCK_AUDIT ||--o{ STOCK_AUDIT_DETAILS : records
-    ITEM ||--o{ STOCK_AUDIT_DETAILS : counted
+    CATEGORY ||--o{ ITEM : "categorizes"
+    ITEM ||--o{ STOCK : "tracked_in"
+    STORE_LOCATION ||--o{ STOCK : "stores"
+    SUPPLIER ||--o{ PURCHASE_ORDER : "receives"
+    USER ||--o{ PURCHASE_ORDER : "creates"
+    PURCHASE_ORDER ||--o{ PURCHASE_ORDER_ITEM : "contains"
+    ITEM ||--o{ PURCHASE_ORDER_ITEM : "ordered_as"
+    PURCHASE_ORDER ||--o{ GOODS_RECEIPT : "received_as"
+    USER ||--o{ GOODS_RECEIPT : "receives"
+    DEPARTMENT ||--o{ ISSUE_REQUEST : "raises"
+    USER ||--o{ ISSUE_REQUEST : "requests"
+    USER ||--o{ ISSUE_REQUEST : "approves"
+    ISSUE_REQUEST ||--o{ ISSUE_DETAILS : "contains"
+    ITEM ||--o{ ISSUE_DETAILS : "issued_as"
+    USER ||--o{ ISSUE_DETAILS : "issues"
+    STORE_LOCATION ||--o{ STOCK_TRANSFER : "from"
+    STORE_LOCATION ||--o{ STOCK_TRANSFER : "to"
+    ITEM ||--o{ STOCK_TRANSFER : "transferred"
+    USER ||--o{ STOCK_TRANSFER : "initiates"
+    USER ||--o{ STOCK_TRANSFER : "approves"
+    ITEM ||--o{ STOCK_ADJUSTMENT : "adjusted"
+    STORE_LOCATION ||--o{ STOCK_ADJUSTMENT : "location"
+    USER ||--o{ STOCK_ADJUSTMENT : "performs"
+    STORE_LOCATION ||--o{ STOCK_AUDIT : "audited"
+    USER ||--o{ STOCK_AUDIT : "conducts"
+    STOCK_AUDIT ||--o{ STOCK_AUDIT_DETAILS : "records"
+    ITEM ||--o{ STOCK_AUDIT_DETAILS : "counted"
     
     %% Accounting Relationships
-    ACCOUNT ||--o{ ACCOUNT : has_parent
-    ACCOUNT ||--o{ JOURNAL_LINE : records
-    JOURNAL_ENTRY ||--o{ JOURNAL_LINE : contains
-    USER ||--o{ JOURNAL_ENTRY : creates
-    ACCOUNT ||--o{ EXPENSE : categorizes
-    DEPARTMENT ||--o{ EXPENSE : incurs
-    USER ||--o{ EXPENSE : records
-    ACCOUNT ||--o{ ASSET : tracks
-    ASSET ||--o{ DEPRECIATION : depreciates
-    DEPRECIATION ||--o{ JOURNAL_ENTRY : posts
-    ACCOUNT ||--o{ TAX : applies
-    DEPARTMENT ||--o{ BUDGET : allocated_to
-    USER ||--o{ BUDGET : prepares
-    BUDGET ||--o{ BUDGET_LINE : contains
-    ACCOUNT ||--o{ BUDGET_LINE : allocated_for
-    ACCOUNT ||--o{ BANK_ACCOUNT : links_to
+    ACCOUNT ||--o{ ACCOUNT : "has_parent"
+    ACCOUNT ||--o{ JOURNAL_LINE : "records"
+    JOURNAL_ENTRY ||--o{ JOURNAL_LINE : "contains"
+    USER ||--o{ JOURNAL_ENTRY : "creates"
+    ACCOUNT ||--o{ EXPENSE : "categorizes"
+    DEPARTMENT ||--o{ EXPENSE : "incurs"
+    USER ||--o{ EXPENSE : "records"
+    ACCOUNT ||--o{ ASSET : "tracks"
+    ASSET ||--o{ DEPRECIATION : "depreciates"
+    DEPRECIATION ||--o{ JOURNAL_ENTRY : "posts"
+    ACCOUNT ||--o{ TAX : "applies"
+    DEPARTMENT ||--o{ BUDGET : "allocated_to"
+    USER ||--o{ BUDGET : "prepares"
+    BUDGET ||--o{ BUDGET_LINE : "contains"
+    ACCOUNT ||--o{ BUDGET_LINE : "allocated_for"
+    ACCOUNT ||--o{ BANK_ACCOUNT : "links_to"
+```
