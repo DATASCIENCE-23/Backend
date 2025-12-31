@@ -1,75 +1,70 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from datetime import date
-from typing import List, Optional
+from typing import List, Optional, Dict
 
-# Import DB dependency
-from core.database import get_db
+from database import get_db
+from Purchase_schema import POCreate, POResp, POUpdate, POItemCreate, POItemResp
+from Purchase_controller import PurchaseController
 
-# Import schemas
-from schemas.purchase_schema import POCreate, POResp, POUpdate
-from schemas.purchase_item_schema import POItemCreate, POItemResp
-
-# Import service
-from services.purchase_service import POService
-
-# Router setup
 router = APIRouter(prefix="/api/po", tags=["purchase"])
 
 
 @router.post("", response_model=POResp)
-def createPO(data: POCreate, db: Session = Depends(get_db)):
-    """Create PO"""
-    try:
-        return POService.createPO(db, data)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+def create_po(data: POCreate, db: Session = Depends(get_db)):
+    """Create purchase order"""
+    return PurchaseController.create_po(data, db)
 
 
-@router.post("/{purchaseId}/items", response_model=POItemResp)
-def addItem(purchaseId: int, data: POItemCreate, db: Session = Depends(get_db)):
-    """Add item to PO"""
-    try:
-        return POService.addItem(db, purchaseId, data)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-
-@router.get("/{purchaseId}", response_model=POResp)
-def getPO(purchaseId: int, db: Session = Depends(get_db)):
-    """Get PO"""
-    po = POService.getPO(db, purchaseId)
-    if not po:
-        raise HTTPException(status_code=404, detail="PO not found")
-    return po
+@router.get("/{purchase_id}", response_model=POResp)
+def get_po(purchase_id: int, db: Session = Depends(get_db)):
+    """Get purchase order"""
+    return PurchaseController.get_po(purchase_id, db)
 
 
 @router.get("", response_model=List[POResp])
-def listPO(
-    supplierId: Optional[int] = Query(None),
+def list_po(
+    supplier_id: Optional[int] = Query(None),
     status: Optional[str] = Query(None),
-    dateFrom: Optional[date] = Query(None),
-    dateTo: Optional[date] = Query(None),
+    date_from: Optional[date] = Query(None),
+    date_to: Optional[date] = Query(None),
     db: Session = Depends(get_db)
 ):
-    """List POs"""
-    return POService.listPO(db, supplierId, status, dateFrom, dateTo)
+    """List purchase orders"""
+    return PurchaseController.list_po(supplier_id, status, date_from, date_to, db)
 
 
-@router.patch("/{purchaseId}", response_model=POResp)
-def updateStatus(purchaseId: int, data: POUpdate, db: Session = Depends(get_db)):
-    """Update PO status"""
-    try:
-        return POService.updateStatus(db, purchaseId, data)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+@router.patch("/{purchase_id}", response_model=POResp)
+def update_status(purchase_id: int, data: POUpdate, db: Session = Depends(get_db)):
+    """Update purchase order status"""
+    return PurchaseController.update_status(purchase_id, data, db)
 
 
-@router.delete("/{purchaseId}/items/{itemId}")
-def removeItem(purchaseId: int, itemId: int, db: Session = Depends(get_db)):
-    """Remove item from PO"""
-    try:
-        POService.removeItem(db, itemId)
-        return {"msg": "Item removed"}
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+@router.post("/{purchase_id}/items", response_model=POItemResp)
+def add_item(purchase_id: int, data: POItemCreate, db: Session = Depends(get_db)):
+    """Add item to purchase order"""
+    return PurchaseController.add_item(purchase_id, data, db)
+
+
+@router.delete("/{purchase_id}/items/{item_id}")
+def remove_item(purchase_id: int, item_id: int, db: Session = Depends(get_db)):
+    """Remove item from purchase order"""
+    return PurchaseController.remove_item(item_id, db)
+
+
+@router.post("/{purchase_id}/grn")
+def create_grn(purchase_id: int, recv_by: int, notes: Optional[str] = None, db: Session = Depends(get_db)):
+    """Create goods receipt note"""
+    return PurchaseController.create_grn(purchase_id, recv_by, notes, db)
+
+
+@router.get("/report/summary", response_model=Dict)
+def get_report(
+    date_from: Optional[date] = Query(None),
+    date_to: Optional[date] = Query(None),
+    supplier_id: Optional[int] = Query(None),
+    db: Session = Depends(get_db)
+):
+    """Get purchase report by date range and supplier"""
+    return PurchaseController.get_report(date_from, date_to, supplier_id, db)
+
