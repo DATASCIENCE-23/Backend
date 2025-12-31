@@ -3,11 +3,17 @@ from sqlalchemy.orm import Session
 from datetime import date
 from typing import List, Optional
 
+# Import DB dependency
 from core.database import get_db
+
+# Import schemas
 from schemas.purchase_schema import POCreate, POResp, POUpdate
 from schemas.purchase_item_schema import POItemCreate, POItemResp
+
+# Import service
 from services.purchase_service import POService
 
+# Router setup
 router = APIRouter(prefix="/api/po", tags=["purchase"])
 
 

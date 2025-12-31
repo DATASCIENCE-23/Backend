@@ -1,7 +1,40 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import date
-from typing import List, Optional
+from typing import Optional, List
 from decimal import Decimal
+
+
+# -----------------------------
+# GRN Schemas
+# -----------------------------
+class GRNCreate(BaseModel):
+    purchaseId: int
+    grnNum: str
+    recvDate: date
+    recvBy: Optional[int] = None
+    notes: Optional[str] = None
+
+
+class GRNResp(BaseModel):
+    receiptId: int
+    purchaseId: int
+    grnNum: str
+    recvDate: Optional[date]
+    recvBy: Optional[int]
+    notes: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+# -----------------------------
+# Purchase Order Item Schemas
+# -----------------------------
+class POItemCreate(BaseModel):
+    itemId: int
+    orderedQty: int = Field(gt=0)
+    unitPrice: Decimal = Field(gt=0)
+    expiryDate: Optional[date] = None
 
 
 class POItemResp(BaseModel):
@@ -18,6 +51,9 @@ class POItemResp(BaseModel):
         from_attributes = True
 
 
+# -----------------------------
+# Purchase Order Schemas
+# -----------------------------
 class POCreate(BaseModel):
     poNum: str
     orderDate: date

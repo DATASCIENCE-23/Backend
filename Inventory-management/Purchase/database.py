@@ -4,6 +4,7 @@ from sqlalchemy.pool import NullPool
 import os
 from dotenv import load_dotenv
 
+# Load environment variables from .env file
 load_dotenv()
 
 # Database connection string
@@ -15,7 +16,7 @@ DB_NAME = os.getenv("DB_NAME")
 
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
-# Create engine
+# Create engine with NullPool to avoid connection reuse across threads
 engine = create_engine(
     DATABASE_URL,
     poolclass=NullPool,
@@ -28,7 +29,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Base class for models
 Base = declarative_base()
 
-
 def get_db():
     """Dependency for getting database session"""
     db = SessionLocal()
@@ -37,12 +37,9 @@ def get_db():
     finally:
         db.close()
 
-
 def init_db():
     """Initialize database (create tables if they don't exist)"""
-    # Only create tables that don't exist - skip if schema already has tables
     try:
         Base.metadata.create_all(bind=engine)
     except Exception as e:
-        # Tables likely already exist, continue anyway
         print(f"Note: {e}")

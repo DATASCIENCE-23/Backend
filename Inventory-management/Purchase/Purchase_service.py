@@ -1,15 +1,21 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
-from datetime import date
+from datetime import date, datetime
 from typing import List, Optional
 
+# Import models
 from models.purchase_order import PO
 from models.purchase_order_item import POItem
+from models.goods_receipt import GRN
+
+# Import schemas
 from schemas.purchase_schema import POCreate, POUpdate
 from schemas.purchase_item_schema import POItemCreate
 
 
 class POService:
+    """Service class for managing Purchase Orders"""
+
     @staticmethod
     def createPO(db: Session, data: POCreate) -> PO:
         """Create purchase order"""
@@ -109,3 +115,35 @@ class POService:
         db.delete(item)
         db.commit()
         POService.updateTotal(db, purchaseId)
+
+
+class GRNService:
+    """Service class for managing Goods Receipt Notes (GRN)"""
+
+    @staticmethod
+    def genGRN(db: Session) -> str:
+        """Generate sequential GRN: GRN-YYYY-MM-XXXXX"""
+        now = datetime.now()
+        year = now.strftime("%Y")
+        month = now.strftime("%m")
+        count = db.query(GRN).filter(
+            GRN.grnNum.like(f"GRN-{year}-{month}-%")
+        ).count()
+        seq = str(count + 1).zfill(5)
+        return f"GRN-{year}-{month}-{seq}"
+
+    @staticmethod
+    def createGRN(db: Session, purchaseId: int, recvBy: int, notes: str = None) -> GRN:
+        """Create GRN"""
+        grnNum = GRNService.genGRN(db)
+        grn = GRN(
+            purchaseId=purchaseId,
+            grnNum=grnNum,
+            recvDate=datetime.now().date(),
+            recvBy=recvBy,
+            notes=notes
+        )
+        db.add(grn)
+        db.commit()
+        db.refresh(grn)
+        return grn
