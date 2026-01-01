@@ -2,8 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from .User_model import User
 from .User_service import UserService
-from ..database import get_db  # Shared database dependency
-from .configuration import get_user_service  # We'll create this next
+from database import get_db  # Shared database dependency
 
 router = APIRouter()
 

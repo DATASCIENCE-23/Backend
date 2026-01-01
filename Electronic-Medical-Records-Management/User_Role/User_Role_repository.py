@@ -1,7 +1,7 @@
 # user_role/repository.py
 
 from sqlalchemy.orm import Session
-from .models import UserRole
+from .User_Role_models import UserRole
 
 
 class UserRoleRepository:
@@ -24,9 +24,14 @@ class UserRoleRepository:
     def get_all_user_roles(self):
         return self.db.query(UserRole).all()
 
-    def update_user_role(self, user_role: UserRole):
-        self.db.merge(user_role)
+    def update_user_role(self, user_role_id: int, payload: dict):
+        user_role = self.get_user_role_by_id(user_role_id)
+        if not user_role:
+            return None
+        for k, v in payload.items():
+            setattr(user_role, k, v)
         self.db.commit()
+        self.db.refresh(user_role)
         return user_role
 
     def delete_user_role(self, user_role_id: int):

@@ -3,10 +3,9 @@
 from sqlalchemy.orm import Session
 from fastapi import Depends
 
-from .repository import UserRoleRepository
-from .service import UserRoleService
-from .models import Base
-from ..database import get_db
+from .User_Role_repository import UserRoleRepository
+from .User_Role_service import UserRoleService
+from database import get_db
 
 
 def get_user_role_service(db: Session = Depends(get_db)):

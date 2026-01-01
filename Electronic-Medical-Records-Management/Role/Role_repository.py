@@ -18,14 +18,23 @@ class RoleRepository:
     def get_all_roles(self):
         return self.db.query(Role).all()
 
-    def update_role(self, role: Role):
-        self.db.merge(role)
+    def update_role(self, role_id: int, payload: dict):
+        role = self.get_role_by_id(role_id)
+        if not role:
+            return None
+
+        for key, value in payload.items():
+            setattr(role, key, value)
+
         self.db.commit()
+        self.db.refresh(role)
         return role
 
     def delete_role(self, role_id: int):
         role = self.get_role_by_id(role_id)
-        if role:
-            self.db.delete(role)
-            self.db.commit()
+        if not role:
+            return None
+
+        self.db.delete(role)
+        self.db.commit()
         return role
