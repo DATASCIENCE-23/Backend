@@ -1,37 +1,33 @@
 from fastapi import APIRouter, Depends, HTTPException
+from typing import List
+
+from .Medical_Record_schema import (
+    MedicalRecordCreate,
+    MedicalRecordUpdate,
+    MedicalRecordResponse,
+)
 from .Medical_Record_service import MedicalRecordService
 from .Medical_Record_configuration import get_medical_record_service
 
 router = APIRouter(
     prefix="/medical-records",
-    tags=["Medical Records"]
+    tags=["EMR - Medical Records"]
 )
 
-@router.post("/")
+# CREATE
+@router.post("/", response_model=MedicalRecordResponse)
 def create_medical_record(
-    patient_id: int,
-    payload: dict,
+    payload: MedicalRecordCreate,
+    doctor_id: int,   # ✅ explicitly passed
     service: MedicalRecordService = Depends(get_medical_record_service),
 ):
-    # TEMP: until auth is added
-    user_id = 1
-
     return service.create_record(
-        user_id=user_id,
-        patient_id=patient_id,
-        payload=payload
+        doctor_id=doctor_id,
+        data=payload.dict()
     )
 
-
-
-@router.get("/")
-def list_all_records(
-    service: MedicalRecordService = Depends(get_medical_record_service),
-):
-    return service.list_all_records()
-
-
-@router.get("/{record_id}")
+# READ (single)
+@router.get("/{record_id}", response_model=MedicalRecordResponse)
 def get_medical_record(
     record_id: int,
     service: MedicalRecordService = Depends(get_medical_record_service),
@@ -40,13 +36,44 @@ def get_medical_record(
     if not record:
         raise HTTPException(status_code=404, detail="Record not found")
     return record
-@router.put("/{record_id}")
-def update_medical_record(
-    record_id: int,
-    payload: dict,
+
+# READ (by patient)
+@router.get(
+    "/patient/{patient_id}",
+    response_model=List[MedicalRecordResponse]
+)
+def get_patient_medical_history(
+    patient_id: int,
     service: MedicalRecordService = Depends(get_medical_record_service),
 ):
-    try:
-        return service.update_record(record_id, payload)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return service.get_patient_history(patient_id)
+
+# UPDATE
+@router.put("/{record_id}", response_model=MedicalRecordResponse)
+def update_medical_record(
+    record_id: int,
+    payload: MedicalRecordUpdate,
+    service: MedicalRecordService = Depends(get_medical_record_service),
+):
+    record = service.update_record(
+        record_id,
+        payload.dict(exclude_unset=True)
+    )
+    if not record:
+        raise HTTPException(status_code=404, detail="Record not found")
+    return record
+
+# DELETE
+@router.delete("/{record_id}")
+def delete_medical_record(
+    record_id: int,
+    service: MedicalRecordService = Depends(get_medical_record_service),
+):
+    service.delete_record(record_id)
+    return {"message": "Medical record deleted successfully"}
+
+@router.get("/", response_model=List[MedicalRecordResponse])
+def get_all_medical_records(
+    service: MedicalRecordService = Depends(get_medical_record_service),
+):
+    return service.get_all_records()

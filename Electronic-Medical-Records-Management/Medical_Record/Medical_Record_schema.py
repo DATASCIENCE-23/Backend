@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from datetime import datetime
 
 class MedicalRecordCreate(BaseModel):
     patient_id: int
@@ -12,7 +13,6 @@ class MedicalRecordCreate(BaseModel):
     treatment_plan: Optional[str] = None
     notes: Optional[str] = None
 
-
 class MedicalRecordUpdate(BaseModel):
     chief_complaint: Optional[str] = None
     history_of_present_illness: Optional[str] = None
@@ -22,13 +22,12 @@ class MedicalRecordUpdate(BaseModel):
     treatment_plan: Optional[str] = None
     notes: Optional[str] = None
 
-
 class MedicalRecordResponse(BaseModel):
     record_id: int
     patient_id: int
     doctor_id: int
     visit_id: Optional[int]
-    record_date: str
+    record_date: datetime
 
     class Config:
         from_attributes = True
