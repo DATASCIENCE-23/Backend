@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 # Update these credentials according to your PostgreSQL setup
-DATABASE_URL = "postgresql://postgres:Password@localhost:5432/hospitalmanagement"
+DATABASE_URL = "postgresql://postgres:Password786@localhost:5432/hospitalmanagement"
 
 engine = create_engine(
     DATABASE_URL,
