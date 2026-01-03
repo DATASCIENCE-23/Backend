@@ -1,21 +1,28 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 from database import get_db
 from .AuditLog_controller import AuditLogController
 
-router = APIRouter(prefix="/audit-logs", tags=["Audit Logs"])
+router = APIRouter(tags=["Audit Logs"])
+
+class LogActionRequest(BaseModel):
+    user_id: int
+    action_type: str
+    ip_address: str = None
+    entity_name: str = None
+    entity_id: int = None
+    details: str = None
 
 # Only admins should access these routes in real app (add auth later)
 
 @router.post("/log")
 def log_action(
-    user_id: int,
-    action_type: str,
-    ip_address: str = None,
+    request: LogActionRequest,
     db: Session = Depends(get_db)
 ):
     controller = AuditLogController(db)
-    return controller.create_log(user_id, action_type, ip_address)
+    return controller.create_log(request.user_id, request.action_type, request.ip_address, request.entity_name, request.entity_id, request.details)
 
 
 @router.get("/user/{user_id}")

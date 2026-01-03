@@ -7,12 +7,15 @@ class AuditLogService:
     def __init__(self, db):
         self.repository = AuditLogRepository(db)
 
-    def log_action(self, user_id: int, action_type: str, ip_address: str = None) -> AuditLog:
+    def log_action(self, user_id: int, action_type: str, ip_address: str = None, entity_name: str = None, entity_id: int = None, details: str = None) -> AuditLog:
         log = AuditLog(
             user_id=user_id,
             action_time=datetime.utcnow(),
             action_type=action_type,
-            ip_address=ip_address
+            ip_address=ip_address,
+            entity_name=entity_name,
+            entity_id=entity_id,
+            details=details
         )
         return self.repository.create(log)
 

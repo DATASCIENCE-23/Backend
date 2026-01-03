@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey
 from datetime import datetime
 from database import Base
+from sqlalchemy.orm import relationship
 
 class MedicalRecord(Base):
     __tablename__ = "medical_record"
@@ -20,3 +21,5 @@ class MedicalRecord(Base):
     diagnosis = Column(Text)
     treatment_plan = Column(Text)
     notes = Column(Text)
+
+    reports = relationship("Report", back_populates="medical_record", cascade="all, delete-orphan")

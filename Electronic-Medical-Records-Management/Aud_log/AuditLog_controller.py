@@ -6,8 +6,8 @@ class AuditLogController:
     def __init__(self, db):
         self.service = AuditLogService(db)
 
-    def create_log(self, user_id: int, action_type: str, ip_address: str = None):
-        log = self.service.log_action(user_id, action_type, ip_address)
+    def create_log(self, user_id: int, action_type: str, ip_address: str = None, entity_name: str = None, entity_id: int = None, details: str = None):
+        log = self.service.log_action(user_id, action_type, ip_address, entity_name, entity_id, details)
         return {
             "message": "Action logged",
             "log_id": log.log_id,

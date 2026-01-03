@@ -5,10 +5,10 @@ from database import Base
 
 
 class Report(Base):
-    __tablename__ = "reports"
+    __tablename__ = "report"
 
     report_id = Column(Integer, primary_key=True, index=True)
-    record_id = Column(Integer, ForeignKey("medical_records.record_id", ondelete="CASCADE"), nullable=False, index=True)
+    record_id = Column(Integer, ForeignKey("medical_record.record_id", ondelete="CASCADE"), nullable=False, index=True)
     report_type = Column(String(100), nullable=False)  # e.g., "lab", "discharge_summary", "radiology"
     report_date = Column(Date, default=date.today, nullable=False)
     findings = Column(String, nullable=False)  # Main content of the report (text)

@@ -1,20 +1,26 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 from database import get_db
 from .Report_controller import ReportController
 
-router = APIRouter(prefix="/reports", tags=["Reports"])
+router = APIRouter(tags=["Reports"])
+
+class CreateReportRequest(BaseModel):
+    record_id: int
+    report_type: str
+    findings: str
+    report_date: str = None  # Optional, will use today if not provided
+    file_url: str = None
 
 # Create a new report for a medical record (visit)
 @router.post("/create")
 def create_report(
-    record_id: int,
-    report_type: str,
-    findings: str,
+    request: CreateReportRequest,
     db: Session = Depends(get_db)
 ):
     controller = ReportController(db)
-    return controller.create_report(record_id, report_type, findings)
+    return controller.create_report(request.record_id, request.report_type, request.findings)
 
 
 # Get one report by ID

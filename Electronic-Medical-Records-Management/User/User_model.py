@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.sql import func
 from database import Base
+from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "users"
@@ -19,3 +20,5 @@ class User(Base):
 
     created_at = Column(DateTime, server_default=func.now())
     last_login = Column(DateTime, nullable=True)
+
+    audit_logs = relationship("AuditLog", back_populates="user")

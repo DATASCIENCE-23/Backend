@@ -1,3 +1,4 @@
+from typing import List
 from .Report_model import Report
 from .Report_repository import ReportRepository
 from datetime import date
