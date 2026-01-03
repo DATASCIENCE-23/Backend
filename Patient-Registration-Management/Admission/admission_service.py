@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from .admission_model import Admission
 from .admission_repository import AdmissionRepository
-from appointment.appointment_model import Appointment
+from Appointment.appointment_model import Appointment
 
 class AdmissionService:
 
