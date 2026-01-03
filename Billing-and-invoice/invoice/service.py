@@ -6,7 +6,7 @@ Created on Wed Dec 31 14:32:50 2025
 @author: cslinux
 """
 
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 from decimal import Decimal
 
 from .models import Invoice, InvoiceLineItem
@@ -19,9 +19,9 @@ class InvoiceService:
     def __init__(self):
         self.repo = InvoiceRepository()
 
-    async def create_invoice(
+    def create_invoice(
         self,
-        db: AsyncSession,
+        db: Session,
         patient_id: int,
         created_by: int,
         invoice_type,
@@ -61,7 +61,7 @@ class InvoiceService:
         invoice.tax_amount = tax_total
         invoice.grand_total = subtotal + tax_total
 
-        return await self.repo.create(db, invoice)
+        return self.repo.create(db, invoice)
 
-    async def get_invoice(self, db: AsyncSession, invoice_id: int):
-        return await self.repo.get_by_id(db, invoice_id)
+    def get_invoice(self, db: Session, invoice_id: int):
+        return self.repo.get_by_id(db, invoice_id)

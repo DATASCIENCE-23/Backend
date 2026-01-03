@@ -1,21 +1,21 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from typing import List
-from .models import InvoiceLineItem
+from .model import InvoiceLineItem
 from .service import InvoiceService
 from .configuration import get_invoice_service
 
 router = APIRouter(prefix="/line-items", tags=["Invoice Line Items"])
 
-@router.post("/", response_model=dict, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=None, status_code=status.HTTP_201_CREATED)
 def create_line_item(
-    line_item: InvoiceLineItem,
+    line_item: dict,
     service: InvoiceService = Depends(get_invoice_service)
 ):
     created = service.add_line_item(line_item)
     return {"line_item_id": created.line_item_id, "message": "Line item created"}
 
-@router.get("/{line_item_id}", response_model=dict)
+@router.get("/{line_item_id}", response_model=None)
 def get_line_item(
     line_item_id: int,
     service: InvoiceService = Depends(get_invoice_service)

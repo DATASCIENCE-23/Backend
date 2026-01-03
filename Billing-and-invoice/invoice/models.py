@@ -13,7 +13,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
-from app.db.base import Base
+from database import Base
 from .configuration import InvoiceStatus, InvoiceType
 
 

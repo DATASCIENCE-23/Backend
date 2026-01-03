@@ -1,5 +1,5 @@
 from .repository import InvoiceRepository
-from .models import Invoice, InvoiceLineItem
+from .model import Invoice, InvoiceLineItem
 from typing import List
 
 class InvoiceService:
@@ -23,8 +23,9 @@ class InvoiceService:
         return self.repo.delete_invoice(invoice_id)
 
     # ── Line Item operations ──────────────────────────────────────────────────
-    def add_line_item(self, line_item: InvoiceLineItem) -> InvoiceLineItem:
-        return self.repo.create_line_item(line_item)
+    def add_line_item(self, line_item: dict) -> InvoiceLineItem:
+        line_item_obj = InvoiceLineItem(**line_item)
+        return self.repo.create_line_item(line_item_obj)
 
     def get_line_item(self, line_item_id: int) -> InvoiceLineItem | None:
         return self.repo.get_line_item_by_id(line_item_id)

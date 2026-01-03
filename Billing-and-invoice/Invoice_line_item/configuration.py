@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import Depends
-from ..database import get_db
+from database import get_db
 from .repository import InvoiceRepository
 from .service import InvoiceService
 

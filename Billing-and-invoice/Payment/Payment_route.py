@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from .payment_controller import PaymentController
-from .payment_model import PaymentCreate, PaymentResponse
+from .Payment_controller import PaymentController
+from .Payment_model import PaymentCreate, PaymentResponse
 from database import get_db
 
 router = APIRouter(prefix="/api/payments", tags=["Payments"])
