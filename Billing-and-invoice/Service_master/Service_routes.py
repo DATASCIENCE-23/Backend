@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from Service.Service_controller import router as service_controller
+from .Service_controller import router as service_controller
 
 router = APIRouter(
     prefix="/services",

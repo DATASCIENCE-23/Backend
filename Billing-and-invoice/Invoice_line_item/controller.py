@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from typing import List
-from .model import InvoiceLineItem
 from .service import InvoiceService
 from .configuration import get_invoice_service
 
@@ -36,10 +35,10 @@ def get_invoice_line_items(
 @router.put("/{line_item_id}", response_model=dict)
 def update_line_item(
     line_item_id: int,
-    line_item: InvoiceLineItem,
+    line_item: dict,
     service: InvoiceService = Depends(get_invoice_service)
 ):
-    if line_item.line_item_id != line_item_id:
+    if line_item.get("line_item_id") != line_item_id:
         raise HTTPException(400, "Line item ID in body must match URL")
     updated = service.update_line_item(line_item)
     return updated.__dict__

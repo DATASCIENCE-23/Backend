@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
-from .payment_service import PaymentService
-from .payment_model import PaymentCreate, PaymentResponse
+from .Payment_service import PaymentService
+from .Payment_model import PaymentCreate, PaymentResponse
 from database import get_db
 
 

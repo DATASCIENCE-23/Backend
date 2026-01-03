@@ -33,8 +33,9 @@ class InvoiceService:
     def get_invoice_line_items(self, invoice_id: int) -> List[InvoiceLineItem]:
         return self.repo.get_line_items_by_invoice(invoice_id)
 
-    def update_line_item(self, line_item: InvoiceLineItem) -> InvoiceLineItem:
-        return self.repo.update_line_item(line_item)
+    def update_line_item(self, line_item: dict) -> InvoiceLineItem:
+        line_item_obj = InvoiceLineItem(**line_item)
+        return self.repo.update_line_item(line_item_obj)
 
     def remove_line_item(self, line_item_id: int) -> InvoiceLineItem | None:
         return self.repo.delete_line_item(line_item_id)

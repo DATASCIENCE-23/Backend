@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from Service.Service_model import ServiceMaster
+from .Service_model import ServiceMaster
 
 class ServiceRepository:
 

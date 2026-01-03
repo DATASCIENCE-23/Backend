@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from .payment_model import Payment
+from .Payment_model import Payment
 
 
 class PaymentRepository:

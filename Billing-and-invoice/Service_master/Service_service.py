@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from Service.Service_model import ServiceMaster
-from Service.Service_repository import ServiceRepository
+from .Service_model import ServiceMaster
+from .Service_repository import ServiceRepository
 
 class ServiceService:
 
