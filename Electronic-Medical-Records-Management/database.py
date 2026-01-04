@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = "postgresql://postgres:admin@localhost:5432/hospitalmanagement"
+DATABASE_URL = "postgresql://postgres:CloudComputing@localhost:5432/hospitalmanagement"
 
 engine = create_engine(
     DATABASE_URL,
@@ -27,6 +27,8 @@ from Medical_Record.Medical_Record_model import MedicalRecord
 from Report.Report_model import Report
 from Prescription.Prescription_model import Prescription  # ✅ also required
 from Aud_log.AuditLog_model import AuditLog
+from Prescription_Item.Prescription_Item_model import PrescriptionItem 
+
 
 from sqlalchemy.orm import Session
 

@@ -9,6 +9,8 @@ from Medical_Record.Medical_Record_routes import router as medical_record_router
 from Prescription.Prescription_routes import router as prescription_router
 from Aud_log.AuditLog_routes import router as AuditLog_routes
 from Report.Report_routes import router as Report_router
+from Prescription_Item.Prescription_Item_routes import router as prescription_item_router
+
 
 app = FastAPI(
     title="Electronic Medical Records API",
@@ -23,6 +25,7 @@ app.include_router(AuditLog_routes,prefix="/audit-logs", tags=["Audit Logs"])
 app.include_router(Report_router,prefix="/reports", tags=["Reports"])
 app.include_router(medical_record_router)
 app.include_router(prescription_router)
+app.include_router(prescription_item_router)
 @app.get("/")
 def root():
     return {"status": "EMR Backend running"}
