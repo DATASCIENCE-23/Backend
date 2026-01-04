@@ -1,4 +1,5 @@
-from service import AddressService
+from address_service import AddressService
+
 
 class AddressController:
 

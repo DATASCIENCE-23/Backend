@@ -1,5 +1,5 @@
-from patient_repository import PatientRepository
-from patient_model import Patient
+from Patient_Registration_Management.patient.patient_repository import PatientRepository
+from Patient_Registration_Management.patient.patient_model import Patient
 
 
 class PatientService:

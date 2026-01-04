@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
-from model import Address
+from Patient_Registration_Management.Address.address_model import Address
+
+
 
 class AddressRepository:
 
@@ -10,10 +12,14 @@ class AddressRepository:
         return address
 
     def get_by_id(self, db: Session, address_id: int):
-        return db.query(Address).filter(Address.address_id == address_id).first()
+        return db.query(Address).filter(
+            Address.address_id == address_id
+        ).first()
 
     def get_by_patient_id(self, db: Session, patient_id: int):
-        return db.query(Address).filter(Address.patient_id == patient_id).all()
+        return db.query(Address).filter(
+            Address.patient_id == patient_id
+        ).all()
 
     def delete(self, db: Session, address_id: int):
         address = self.get_by_id(db, address_id)
