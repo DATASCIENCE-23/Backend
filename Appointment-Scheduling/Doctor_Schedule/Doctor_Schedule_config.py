@@ -17,7 +17,7 @@ class DoctorScheduleSettings(BaseSettings):
     """Doctor Schedule entity settings"""
 
     # Database
-    DATABASE_URL: str = "postgresql://user:password@localhost:5432/hospital_db"
+    DATABASE_URL: str = "postgresql://postgres:sql12345678@localhost:5432/hospitalmanagement"
     DATABASE_POOL_SIZE: int = 10
     DATABASE_MAX_OVERFLOW: int = 20
 

@@ -1,63 +1,65 @@
-from sqlalchemy import Column, Integer, String, Date, Time, DateTime, Text, Enum, Numeric, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, Time, DateTime, Text, Enum, Numeric
 from sqlalchemy.sql import func
-from Appointment_config import Base
+from Appointment.Appointment_config import Base
 import enum
 
+
+# ============ MATCH DATABASE ENUM VALUES EXACTLY ============
+
 class AppointmentTypeEnum(enum.Enum):
-    CONSULTATION = "Consultation"
-    FOLLOWUP = "Follow-up"
-    EMERGENCY = "Emergency"
-    ROUTINE_CHECKUP = "Routine Checkup"
+    """
+    Match database: hms.appointment_type_enum
+    Values: 'opd', 'follow_up', 'emergency'
+    """
+    opd = "opd"
+    follow_up = "follow_up"
+    emergency = "emergency"
+
 
 class AppointmentStatusEnum(enum.Enum):
-    SCHEDULED = "Scheduled"
-    CONFIRMED = "Confirmed"
-    CANCELLED = "Cancelled"
-    COMPLETED = "Completed"
-    NO_SHOW = "No Show"
-    RESCHEDULED = "Rescheduled"
+    """
+    Match database: hms.appointment_status_enum
+    Values: 'scheduled', 'completed', 'cancelled', 'no_show'
+    """
+    scheduled = "scheduled"
+    completed = "completed"
+    cancelled = "cancelled"
+    no_show = "no_show"
+
 
 class Appointment(Base):
     __tablename__ = "appointment"
+    __table_args__ = {"schema": "hms"}
 
-    appointment_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    
-    # Foreign Keys
-    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False, index=True)
-    doctor_id = Column(Integer, ForeignKey("doctor.doctor_id"), nullable=False, index=True)
-    
-    # Appointment Date and Time
+    appointment_id = Column(Integer, primary_key=True, autoincrement=True)
+
+    # Foreign Keys - Just define as Integer, DB already has the constraints
+    patient_id = Column(Integer, nullable=False, index=True)
+    doctor_id = Column(Integer, nullable=False, index=True)
+
     appointment_date = Column(Date, nullable=False, index=True)
     start_time = Column(Time, nullable=False)
     end_time = Column(Time, nullable=False)
-    
-    # Appointment Details
+
     appointment_type = Column(
-        Enum(AppointmentTypeEnum),
+        Enum(AppointmentTypeEnum, name="appointment_type_enum", create_type=False, schema="hms"),
         nullable=False,
-        default=AppointmentTypeEnum.CONSULTATION
+        default=AppointmentTypeEnum.opd
     )
-    
+
     status = Column(
-        Enum(AppointmentStatusEnum),
+        Enum(AppointmentStatusEnum, name="appointment_status_enum", create_type=False, schema="hms"),
         nullable=False,
-        default=AppointmentStatusEnum.SCHEDULED
+        default=AppointmentStatusEnum.scheduled
     )
-    
-    reason_for_visit = Column(Text, nullable=True)
-    symptoms = Column(Text, nullable=True)
-    notes = Column(Text, nullable=True)
-    
-    # Consultation Fee
-    consultation_fee = Column(Numeric(10, 2), nullable=True)
-    
-    # Booking Information
-    booking_date = Column(DateTime, nullable=False, default=func.now())
-    
-    # Cancellation Information
-    cancellation_reason = Column(Text, nullable=True)
-    cancelled_at = Column(DateTime, nullable=True)
-    cancelled_by = Column(Integer, ForeignKey("user.user_id"), nullable=True)
-    
+
+    reason_for_visit = Column(Text)
+    symptoms = Column(Text)
+    notes = Column(Text)
+
+    consultation_fee = Column(Numeric(10, 2))
+
+    booking_date = Column(DateTime, nullable=False, server_default=func.now())
+
     def __repr__(self):
-        return f"<Appointment(id={self.appointment_id}, patient_id={self.patient_id}, doctor_id={self.doctor_id}, date={self.appointment_date}, status={self.status})>"
+        return f"<Appointment {self.appointment_id} - {self.status.value}>"

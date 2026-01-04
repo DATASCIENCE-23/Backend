@@ -61,8 +61,7 @@ class AppointmentRepository:
                 Appointment.doctor_id == doctor_id,
                 Appointment.appointment_date == appointment_date,
                 Appointment.status.in_([
-                    AppointmentStatusEnum.SCHEDULED,
-                    AppointmentStatusEnum.CONFIRMED
+                    AppointmentStatusEnum.scheduled  # Only check scheduled appointments
                 ]),
                 or_(
                     and_(
@@ -96,10 +95,7 @@ class AppointmentRepository:
             and_(
                 Appointment.patient_id == patient_id,
                 Appointment.appointment_date >= today,
-                Appointment.status.in_([
-                    AppointmentStatusEnum.SCHEDULED,
-                    AppointmentStatusEnum.CONFIRMED
-                ])
+                Appointment.status == AppointmentStatusEnum.scheduled  # Only scheduled
             )
         ).order_by(Appointment.appointment_date, Appointment.start_time).all()
 
@@ -113,9 +109,9 @@ class AppointmentRepository:
                 or_(
                     Appointment.appointment_date < today,
                     Appointment.status.in_([
-                        AppointmentStatusEnum.COMPLETED,
-                        AppointmentStatusEnum.CANCELLED,
-                        AppointmentStatusEnum.NO_SHOW
+                        AppointmentStatusEnum.completed,
+                        AppointmentStatusEnum.cancelled,
+                        AppointmentStatusEnum.no_show
                     ])
                 )
             )
@@ -150,10 +146,7 @@ class AppointmentRepository:
             and_(
                 Appointment.doctor_id == doctor_id,
                 Appointment.appointment_date == today,
-                Appointment.status.in_([
-                    AppointmentStatusEnum.SCHEDULED,
-                    AppointmentStatusEnum.CONFIRMED
-                ])
+                Appointment.status == AppointmentStatusEnum.scheduled
             )
         ).order_by(Appointment.start_time).all()
 
@@ -164,9 +157,6 @@ class AppointmentRepository:
             and_(
                 Appointment.doctor_id == doctor_id,
                 Appointment.appointment_date == appointment_date,
-                Appointment.status.in_([
-                    AppointmentStatusEnum.SCHEDULED,
-                    AppointmentStatusEnum.CONFIRMED
-                ])
+                Appointment.status == AppointmentStatusEnum.scheduled
             )
         ).count()

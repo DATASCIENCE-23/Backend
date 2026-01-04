@@ -135,48 +135,6 @@ class DoctorScheduleRepository:
         return len(overlapping_schedules) > 0
 
     @staticmethod
-    def get_schedules_by_date_range(
-        db: Session,
-        doctor_id: int,
-        start_date: date,
-        end_date: date
-    ) -> List[DoctorSchedule]:
-        """Get schedules within a date range"""
-        return db.query(DoctorSchedule).filter(
-            and_(
-                DoctorSchedule.doctor_id == doctor_id,
-                DoctorSchedule.is_active == True,
-                DoctorSchedule.effective_from <= end_date,
-                or_(
-                    DoctorSchedule.effective_to == None,
-                    DoctorSchedule.effective_to >= start_date
-                )
-            )
-        ).all()
-
-    @staticmethod
-    def get_expired_schedules(db: Session, current_date: date) -> List[DoctorSchedule]:
-        """Get all expired schedules"""
-        return db.query(DoctorSchedule).filter(
-            and_(
-                DoctorSchedule.is_active == True,
-                DoctorSchedule.effective_to != None,
-                DoctorSchedule.effective_to < current_date
-            )
-        ).all()
-
-    @staticmethod
-    def get_upcoming_schedules(db: Session, doctor_id: int, current_date: date) -> List[DoctorSchedule]:
-        """Get upcoming schedules for a doctor"""
-        return db.query(DoctorSchedule).filter(
-            and_(
-                DoctorSchedule.doctor_id == doctor_id,
-                DoctorSchedule.is_active == True,
-                DoctorSchedule.effective_from > current_date
-            )
-        ).order_by(DoctorSchedule.effective_from).all()
-
-    @staticmethod
     def create(db: Session, schedule: DoctorSchedule) -> DoctorSchedule:
         """Create a new doctor schedule"""
         db.add(schedule)
@@ -206,14 +164,6 @@ class DoctorScheduleRepository:
         return schedule
 
     @staticmethod
-    def activate(db: Session, schedule: DoctorSchedule) -> DoctorSchedule:
-        """Activate a deactivated schedule"""
-        schedule.is_active = True
-        db.commit()
-        db.refresh(schedule)
-        return schedule
-
-    @staticmethod
     def count_active_schedules_by_doctor(db: Session, doctor_id: int) -> int:
         """Count active schedules for a doctor"""
         return db.query(DoctorSchedule).filter(
@@ -222,10 +172,3 @@ class DoctorScheduleRepository:
                 DoctorSchedule.is_active == True
             )
         ).count()
-
-    @staticmethod
-    def get_all_active_schedules(db: Session) -> List[DoctorSchedule]:
-        """Get all active schedules across all doctors"""
-        return db.query(DoctorSchedule).filter(
-            DoctorSchedule.is_active == True
-        ).all()

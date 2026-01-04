@@ -12,7 +12,8 @@ import os
 class AppointmentReminderSettings(BaseSettings):
     """Appointment Reminder entity settings"""
 
-    DATABASE_URL: str = "postgresql://user:password@localhost:5432/hospital_db"
+    DATABASE_URL: str = "postgresql://postgres:your_password@localhost:5432/hospitalmanagement"
+
     DATABASE_POOL_SIZE: int = 10
     DATABASE_MAX_OVERFLOW: int = 20
 

@@ -37,13 +37,33 @@ class BlockedSlotRepository:
         ).all()
 
     @staticmethod
+    def get_upcoming_blocked_slots(db: Session, doctor_id: int, from_date: date) -> List[BlockedSlot]:
+        """Get upcoming blocked slots for a doctor"""
+        return db.query(BlockedSlot).filter(
+            and_(
+                BlockedSlot.doctor_id == doctor_id,
+                BlockedSlot.blocked_date >= from_date
+            )
+        ).order_by(BlockedSlot.blocked_date, BlockedSlot.start_time).all()
+
+    @staticmethod
+    def get_past_blocked_slots(db: Session, doctor_id: int, before_date: date) -> List[BlockedSlot]:
+        """Get past blocked slots for a doctor"""
+        return db.query(BlockedSlot).filter(
+            and_(
+                BlockedSlot.doctor_id == doctor_id,
+                BlockedSlot.blocked_date < before_date
+            )
+        ).order_by(BlockedSlot.blocked_date.desc(), BlockedSlot.start_time.desc()).all()
+
+    @staticmethod
     def get_by_date_range(
-        db: Session,
-        doctor_id: int,
-        start_date: date,
+        db: Session, 
+        doctor_id: int, 
+        start_date: date, 
         end_date: date
     ) -> List[BlockedSlot]:
-        """Get blocked slots for a doctor within a date range"""
+        """Get blocked slots within a date range"""
         return db.query(BlockedSlot).filter(
             and_(
                 BlockedSlot.doctor_id == doctor_id,
@@ -53,26 +73,6 @@ class BlockedSlotRepository:
         ).order_by(BlockedSlot.blocked_date, BlockedSlot.start_time).all()
 
     @staticmethod
-    def get_upcoming_blocked_slots(db: Session, doctor_id: int, from_date: date) -> List[BlockedSlot]:
-        """Get upcoming blocked slots for a doctor from a specific date onwards"""
-        return db.query(BlockedSlot).filter(
-            and_(
-                BlockedSlot.doctor_id == doctor_id,
-                BlockedSlot.blocked_date >= from_date
-            )
-        ).order_by(BlockedSlot.blocked_date, BlockedSlot.start_time).all()
-
-    @staticmethod
-    def get_past_blocked_slots(db: Session, doctor_id: int, until_date: date) -> List[BlockedSlot]:
-        """Get past blocked slots for a doctor until a specific date"""
-        return db.query(BlockedSlot).filter(
-            and_(
-                BlockedSlot.doctor_id == doctor_id,
-                BlockedSlot.blocked_date < until_date
-            )
-        ).order_by(BlockedSlot.blocked_date.desc(), BlockedSlot.start_time.desc()).all()
-
-    @staticmethod
     def check_time_conflict(
         db: Session,
         doctor_id: int,
@@ -80,15 +80,16 @@ class BlockedSlotRepository:
         start_time: time,
         end_time: time,
         exclude_blocked_slot_id: Optional[int] = None
-    ) -> bool:
+    ) -> List[BlockedSlot]:
         """
-        Check if there's a time conflict with existing blocked slots
-        Returns True if there's a conflict, False if no conflict
+        Check if there's a time conflict for a doctor on a specific date
+        Returns list of conflicting blocked slots
         """
         query = db.query(BlockedSlot).filter(
             and_(
                 BlockedSlot.doctor_id == doctor_id,
                 BlockedSlot.blocked_date == blocked_date,
+                # Time overlap check
                 or_(
                     and_(
                         BlockedSlot.start_time <= start_time,
@@ -110,81 +111,16 @@ class BlockedSlotRepository:
         if exclude_blocked_slot_id:
             query = query.filter(BlockedSlot.blocked_slot_id != exclude_blocked_slot_id)
         
-        conflicting_slots = query.all()
-        return len(conflicting_slots) > 0
+        return query.all()
 
     @staticmethod
-    def is_time_blocked(
-        db: Session,
-        doctor_id: int,
-        check_date: date,
-        check_start_time: time,
-        check_end_time: time
-    ) -> bool:
-        """
-        Check if a specific time slot is blocked for a doctor
-        Returns True if the time is blocked, False otherwise
-        """
-        blocked_slots = db.query(BlockedSlot).filter(
-            and_(
-                BlockedSlot.doctor_id == doctor_id,
-                BlockedSlot.blocked_date == check_date,
-                or_(
-                    and_(
-                        BlockedSlot.start_time <= check_start_time,
-                        BlockedSlot.end_time > check_start_time
-                    ),
-                    and_(
-                        BlockedSlot.start_time < check_end_time,
-                        BlockedSlot.end_time >= check_end_time
-                    ),
-                    and_(
-                        BlockedSlot.start_time >= check_start_time,
-                        BlockedSlot.end_time <= check_end_time
-                    )
-                )
-            )
-        ).all()
-        
-        return len(blocked_slots) > 0
-
-    @staticmethod
-    def get_by_created_by(db: Session, created_by: int) -> List[BlockedSlot]:
-        """Get all blocked slots created by a specific user"""
-        return db.query(BlockedSlot).filter(BlockedSlot.created_by == created_by).all()
-
-    @staticmethod
-    def get_blocked_dates_for_doctor(
-        db: Session,
-        doctor_id: int,
-        start_date: date,
-        end_date: date
-    ) -> List[date]:
-        """Get list of dates that have any blocked slots for a doctor"""
+    def get_blocked_dates(db: Session, doctor_id: int) -> List[date]:
+        """Get list of dates that have blocked slots for a doctor"""
         results = db.query(BlockedSlot.blocked_date).filter(
-            and_(
-                BlockedSlot.doctor_id == doctor_id,
-                BlockedSlot.blocked_date >= start_date,
-                BlockedSlot.blocked_date <= end_date
-            )
-        ).distinct().all()
+            BlockedSlot.doctor_id == doctor_id
+        ).distinct().order_by(BlockedSlot.blocked_date).all()
         
         return [result[0] for result in results]
-
-    @staticmethod
-    def count_blocked_slots_by_doctor(db: Session, doctor_id: int) -> int:
-        """Count total blocked slots for a doctor"""
-        return db.query(BlockedSlot).filter(BlockedSlot.doctor_id == doctor_id).count()
-
-    @staticmethod
-    def count_upcoming_blocked_slots(db: Session, doctor_id: int, from_date: date) -> int:
-        """Count upcoming blocked slots for a doctor"""
-        return db.query(BlockedSlot).filter(
-            and_(
-                BlockedSlot.doctor_id == doctor_id,
-                BlockedSlot.blocked_date >= from_date
-            )
-        ).count()
 
     @staticmethod
     def create(db: Session, blocked_slot: BlockedSlot) -> BlockedSlot:
@@ -208,36 +144,14 @@ class BlockedSlotRepository:
         db.commit()
 
     @staticmethod
-    def delete_past_blocked_slots(db: Session, before_date: date) -> int:
-        """
-        Delete all blocked slots before a specific date (cleanup old records)
-        Returns the count of deleted records
-        """
-        count = db.query(BlockedSlot).filter(BlockedSlot.blocked_date < before_date).count()
-        db.query(BlockedSlot).filter(BlockedSlot.blocked_date < before_date).delete()
-        db.commit()
-        return count
-
-    @staticmethod
     def delete_by_date_range(
-        db: Session,
-        doctor_id: int,
-        start_date: date,
+        db: Session, 
+        doctor_id: int, 
+        start_date: date, 
         end_date: date
     ) -> int:
-        """
-        Delete all blocked slots for a doctor within a date range
-        Returns the count of deleted records
-        """
+        """Delete blocked slots within a date range. Returns count of deleted slots."""
         count = db.query(BlockedSlot).filter(
-            and_(
-                BlockedSlot.doctor_id == doctor_id,
-                BlockedSlot.blocked_date >= start_date,
-                BlockedSlot.blocked_date <= end_date
-            )
-        ).count()
-        
-        db.query(BlockedSlot).filter(
             and_(
                 BlockedSlot.doctor_id == doctor_id,
                 BlockedSlot.blocked_date >= start_date,
@@ -246,3 +160,20 @@ class BlockedSlotRepository:
         ).delete()
         db.commit()
         return count
+
+    @staticmethod
+    def count_by_doctor(db: Session, doctor_id: int) -> int:
+        """Count total blocked slots for a doctor"""
+        return db.query(BlockedSlot).filter(
+            BlockedSlot.doctor_id == doctor_id
+        ).count()
+
+    @staticmethod
+    def count_upcoming(db: Session, doctor_id: int, from_date: date) -> int:
+        """Count upcoming blocked slots for a doctor"""
+        return db.query(BlockedSlot).filter(
+            and_(
+                BlockedSlot.doctor_id == doctor_id,
+                BlockedSlot.blocked_date >= from_date
+            )
+        ).count()

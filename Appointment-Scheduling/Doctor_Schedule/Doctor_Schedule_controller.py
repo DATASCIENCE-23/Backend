@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional, Dict
 from datetime import date
-from Doctor_Schedule_config import get_db
+from Doctor_Schedule.Doctor_Schedule_config import get_db
 from Doctor_Schedule.Doctor_Schedule_service import DoctorScheduleService
 from pydantic import BaseModel, Field
 

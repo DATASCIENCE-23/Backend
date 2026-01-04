@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from datetime import date, time, datetime, timedelta
 from typing import List, Optional, Dict
 from Appointment.Appointment_model import Appointment, AppointmentStatusEnum, AppointmentTypeEnum
-from Repository.Appointment_repository import AppointmentRepository
+from Appointment.Appointment_repository import AppointmentRepository
 
 class AppointmentService:
 
@@ -46,6 +46,19 @@ class AppointmentService:
         if not is_available:
             raise ValueError("Time slot is not available. Please choose a different time.")
 
+        # Get appointment type - convert to match database enum
+        appt_type_str = data.get("appointment_type", "opd").lower()
+        # Map common names to database enum values
+        type_mapping = {
+            "consultation": "opd",
+            "followup": "follow_up",
+            "follow-up": "follow_up",
+            "emergency": "emergency",
+            "opd": "opd"
+        }
+        db_type = type_mapping.get(appt_type_str, "opd")
+        appointment_type = AppointmentTypeEnum[db_type]
+
         # Create appointment object
         appointment = Appointment(
             patient_id=patient_id,
@@ -53,8 +66,8 @@ class AppointmentService:
             appointment_date=appointment_date,
             start_time=start_time,
             end_time=end_time,
-            appointment_type=AppointmentTypeEnum[data.get("appointment_type", "CONSULTATION")],
-            status=AppointmentStatusEnum.SCHEDULED,
+            appointment_type=appointment_type,
+            status=AppointmentStatusEnum.scheduled,
             reason_for_visit=data.get("reason_for_visit"),
             symptoms=data.get("symptoms"),
             notes=data.get("notes"),
@@ -137,9 +150,19 @@ class AppointmentService:
         # Update fields
         for key, value in data.items():
             if key == "appointment_type" and isinstance(value, str):
-                value = AppointmentTypeEnum[value]
+                # Map type name to database enum
+                type_mapping = {
+                    "consultation": "opd",
+                    "followup": "follow_up",
+                    "follow-up": "follow_up",
+                    "emergency": "emergency",
+                    "opd": "opd"
+                }
+                db_type = type_mapping.get(value.lower(), "opd")
+                value = AppointmentTypeEnum[db_type]
             elif key == "status" and isinstance(value, str):
-                value = AppointmentStatusEnum[value]
+                # Map status to database enum
+                value = AppointmentStatusEnum[value.lower()]
             
             if hasattr(appointment, key):
                 setattr(appointment, key, value)
@@ -155,29 +178,13 @@ class AppointmentService:
         if not appointment:
             raise ValueError(f"Appointment with ID {appointment_id} not found")
 
-        if appointment.status in [AppointmentStatusEnum.CANCELLED, AppointmentStatusEnum.COMPLETED]:
+        if appointment.status in [AppointmentStatusEnum.cancelled, AppointmentStatusEnum.completed]:
             raise ValueError(f"Cannot cancel appointment with status: {appointment.status.value}")
 
-        appointment.status = AppointmentStatusEnum.CANCELLED
-        appointment.cancellation_reason = reason
-        appointment.cancelled_at = datetime.now()
-        appointment.cancelled_by = cancelled_by
-
-        return AppointmentRepository.update(db, appointment)
-
-    @staticmethod
-    def confirm_appointment(db: Session, appointment_id: int) -> Appointment:
-        """
-        Confirm an appointment
-        """
-        appointment = AppointmentRepository.get_by_id(db, appointment_id)
-        if not appointment:
-            raise ValueError(f"Appointment with ID {appointment_id} not found")
-
-        if appointment.status != AppointmentStatusEnum.SCHEDULED:
-            raise ValueError(f"Can only confirm scheduled appointments. Current status: {appointment.status.value}")
-
-        appointment.status = AppointmentStatusEnum.CONFIRMED
+        appointment.status = AppointmentStatusEnum.cancelled
+        
+        # Note: cancellation_reason, cancelled_at, cancelled_by fields don't exist in DB schema
+        # If you need them, add them to database first
 
         return AppointmentRepository.update(db, appointment)
 
@@ -190,10 +197,10 @@ class AppointmentService:
         if not appointment:
             raise ValueError(f"Appointment with ID {appointment_id} not found")
 
-        if appointment.status not in [AppointmentStatusEnum.SCHEDULED, AppointmentStatusEnum.CONFIRMED]:
-            raise ValueError(f"Cannot complete appointment with status: {appointment.status.value}")
+        if appointment.status != AppointmentStatusEnum.scheduled:
+            raise ValueError(f"Can only complete scheduled appointments. Current status: {appointment.status.value}")
 
-        appointment.status = AppointmentStatusEnum.COMPLETED
+        appointment.status = AppointmentStatusEnum.completed
 
         return AppointmentRepository.update(db, appointment)
 
@@ -206,54 +213,7 @@ class AppointmentService:
         if not appointment:
             raise ValueError(f"Appointment with ID {appointment_id} not found")
 
-        appointment.status = AppointmentStatusEnum.NO_SHOW
-
-        return AppointmentRepository.update(db, appointment)
-
-    @staticmethod
-    def reschedule_appointment(
-        db: Session, 
-        appointment_id: int, 
-        new_date: date, 
-        new_start_time: time, 
-        new_end_time: time
-    ) -> Appointment:
-        """
-        Reschedule an appointment to a new date and time
-        """
-        appointment = AppointmentRepository.get_by_id(db, appointment_id)
-        if not appointment:
-            raise ValueError(f"Appointment with ID {appointment_id} not found")
-
-        if appointment.status in [AppointmentStatusEnum.CANCELLED, AppointmentStatusEnum.COMPLETED]:
-            raise ValueError(f"Cannot reschedule appointment with status: {appointment.status.value}")
-
-        # Convert strings if needed
-        if isinstance(new_date, str):
-            new_date = datetime.strptime(new_date, "%Y-%m-%d").date()
-        if isinstance(new_start_time, str):
-            new_start_time = datetime.strptime(new_start_time, "%H:%M:%S").time()
-        if isinstance(new_end_time, str):
-            new_end_time = datetime.strptime(new_end_time, "%H:%M:%S").time()
-
-        # Validate time logic
-        if new_start_time >= new_end_time:
-            raise ValueError("Start time must be before end time")
-
-        # Check availability
-        is_available = AppointmentRepository.check_time_slot_availability(
-            db, appointment.doctor_id, new_date, new_start_time, new_end_time,
-            exclude_appointment_id=appointment_id
-        )
-        
-        if not is_available:
-            raise ValueError("Time slot is not available. Please choose a different time.")
-
-        # Update appointment
-        appointment.appointment_date = new_date
-        appointment.start_time = new_start_time
-        appointment.end_time = new_end_time
-        appointment.status = AppointmentStatusEnum.RESCHEDULED
+        appointment.status = AppointmentStatusEnum.no_show
 
         return AppointmentRepository.update(db, appointment)
 
@@ -305,3 +265,6 @@ class AppointmentService:
             "start_time": str(start_time),
             "end_time": str(end_time)
         }
+
+    # Note: confirm_appointment and reschedule_appointment removed 
+    # because database doesn't have 'confirmed' or 'rescheduled' enum values
