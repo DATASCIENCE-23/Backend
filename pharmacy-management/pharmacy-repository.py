@@ -155,84 +155,84 @@ class MedicineBatchRepository:
         ).order_by(MedicineBatch.expiry_date).first()
 
 
-class PrescriptionRepository:
-    """Repository for Prescription operations"""
+# class PrescriptionRepository:
+#     """Repository for Prescription operations"""
 
-    @staticmethod
-    def create(db: Session, prescription_data: dict, items_data: List[dict]) -> Prescription:
-        prescription = Prescription(**prescription_data)
-        db.add(prescription)
-        db.flush()
+#     @staticmethod
+#     def create(db: Session, prescription_data: dict, items_data: List[dict]) -> Prescription:
+#         prescription = Prescription(**prescription_data)
+#         db.add(prescription)
+#         db.flush()
 
-        for item_data in items_data:
-            item = PrescriptionItem(prescription_id=prescription.prescription_id, **item_data)
-            db.add(item)
+#         for item_data in items_data:
+#             item = PrescriptionItem(prescription_id=prescription.prescription_id, **item_data)
+#             db.add(item)
 
-        db.commit()
-        db.refresh(prescription)
-        return prescription
+#         db.commit()
+#         db.refresh(prescription)
+#         return prescription
 
-    @staticmethod
-    def get_by_id(db: Session, prescription_id: int) -> Optional[Prescription]:
-        return db.query(Prescription).options(
-            joinedload(Prescription.prescription_items).joinedload(PrescriptionItem.medicine)
-        ).filter(Prescription.prescription_id == prescription_id).first()
+#     @staticmethod
+#     def get_by_id(db: Session, prescription_id: int) -> Optional[Prescription]:
+#         return db.query(Prescription).options(
+#             joinedload(Prescription.prescription_items).joinedload(PrescriptionItem.medicine)
+#         ).filter(Prescription.prescription_id == prescription_id).first()
 
-    @staticmethod
-    def get_pending(db: Session, skip: int = 0, limit: int = 100) -> List[Prescription]:
-        """Get all pending prescriptions"""
-        return db.query(Prescription).filter(
-            Prescription.status.in_([PrescriptionStatus.PENDING, PrescriptionStatus.IN_PROGRESS])
-        ).order_by(desc(Prescription.created_at)).offset(skip).limit(limit).all()
+#     @staticmethod
+#     def get_pending(db: Session, skip: int = 0, limit: int = 100) -> List[Prescription]:
+#         """Get all pending prescriptions"""
+#         return db.query(Prescription).filter(
+#             Prescription.status.in_([PrescriptionStatus.PENDING, PrescriptionStatus.IN_PROGRESS])
+#         ).order_by(desc(Prescription.created_at)).offset(skip).limit(limit).all()
 
-    @staticmethod
-    def get_by_patient(db: Session, patient_id: int) -> List[Prescription]:
-        return db.query(Prescription).filter(
-            Prescription.patient_id == patient_id
-        ).order_by(desc(Prescription.created_at)).all()
+#     @staticmethod
+#     def get_by_patient(db: Session, patient_id: int) -> List[Prescription]:
+#         return db.query(Prescription).filter(
+#             Prescription.patient_id == patient_id
+#         ).order_by(desc(Prescription.created_at)).all()
 
-    @staticmethod
-    def update_status(db: Session, prescription_id: int, status: PrescriptionStatus) -> Optional[Prescription]:
-        prescription = db.query(Prescription).filter(
-            Prescription.prescription_id == prescription_id
-        ).first()
-        if prescription:
-            prescription.status = status
-            db.commit()
-            db.refresh(prescription)
-        return prescription
+#     @staticmethod
+#     def update_status(db: Session, prescription_id: int, status: PrescriptionStatus) -> Optional[Prescription]:
+#         prescription = db.query(Prescription).filter(
+#             Prescription.prescription_id == prescription_id
+#         ).first()
+#         if prescription:
+#             prescription.status = status
+#             db.commit()
+#             db.refresh(prescription)
+#         return prescription
 
-    @staticmethod
-    def check_stock_availability(db: Session, prescription_id: int) -> dict:
-        """Check if all items in prescription have sufficient stock"""
-        prescription = PrescriptionRepository.get_by_id(db, prescription_id)
-        if not prescription:
-            return {"error": "Prescription not found"}
+#     @staticmethod
+#     def check_stock_availability(db: Session, prescription_id: int) -> dict:
+#         """Check if all items in prescription have sufficient stock"""
+#         prescription = PrescriptionRepository.get_by_id(db, prescription_id)
+#         if not prescription:
+#             return {"error": "Prescription not found"}
 
-        availability = []
-        can_dispense_fully = True
+#         availability = []
+#         can_dispense_fully = True
 
-        for item in prescription.prescription_items:
-            total_stock = MedicineRepository.get_total_stock(db, item.medicine_id)
-            can_fulfill = total_stock >= item.prescribed_quantity
+#         for item in prescription.prescription_items:
+#             total_stock = MedicineRepository.get_total_stock(db, item.medicine_id)
+#             can_fulfill = total_stock >= item.prescribed_quantity
 
-            if not can_fulfill:
-                can_dispense_fully = False
+#             if not can_fulfill:
+#                 can_dispense_fully = False
 
-            availability.append({
-                "medicine_id": item.medicine_id,
-                "medicine_name": item.medicine.medicine_name,
-                "requested_quantity": item.prescribed_quantity,
-                "available_quantity": total_stock,
-                "can_fulfill": can_fulfill,
-                "deficit": max(0, item.prescribed_quantity - total_stock)
-            })
+#             availability.append({
+#                 "medicine_id": item.medicine_id,
+#                 "medicine_name": item.medicine.medicine_name,
+#                 "requested_quantity": item.prescribed_quantity,
+#                 "available_quantity": total_stock,
+#                 "can_fulfill": can_fulfill,
+#                 "deficit": max(0, item.prescribed_quantity - total_stock)
+#             })
 
-        return {
-            "prescription_id": prescription_id,
-            "can_dispense_fully": can_dispense_fully,
-            "items": availability
-        }
+#         return {
+#             "prescription_id": prescription_id,
+#             "can_dispense_fully": can_dispense_fully,
+#             "items": availability
+#         }
 
 
 class DispenseRepository:
