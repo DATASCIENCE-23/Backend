@@ -72,6 +72,7 @@ APPOINTMENT {
     time end_time
     enum appointment_type
     enum status
+    char is_admitted "Y/N"
     text reason_for_visit
     text symptoms
     text notes
@@ -130,3 +131,4 @@ APPOINTMENT ||--o{ APPOINTMENT_REMINDER : triggers
 APPOINTMENT ||--o{ APPOINTMENT_HISTORY : logs
 PATIENT ||--o{ WAITING_LIST : joins
 DOCTOR ||--o{ WAITING_LIST : manages
+```
