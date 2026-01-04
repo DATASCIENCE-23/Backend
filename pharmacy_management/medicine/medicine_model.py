@@ -21,8 +21,8 @@ class Medicine(Base):
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    created_by = Column(Integer, ForeignKey("user.user_id"))
-    updated_by = Column(Integer, ForeignKey("user.user_id"))
+    created_by = Column(Integer, ForeignKey("users.user_id"))
+    updated_by = Column(Integer, ForeignKey("users.user_id"))
 
     # Relationships
     batches = relationship("MedicineBatch", back_populates="medicine")

@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 # -------------------------------------------------------------------
 # Format: postgresql+psycopg2://USER:PASSWORD@HOST:PORT/DB_NAME
 SQLALCHEMY_DATABASE_URL = (
-    "postgresql+psycopg2://postgres:postgres@localhost:5432/pharmacy_db"
+    "postgresql+psycopg2://postgres:preethi@localhost:5432/cloudHospital"
 )
 # ↑ adjust user, password, host, port, db name to your setup
 
