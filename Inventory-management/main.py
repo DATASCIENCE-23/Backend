@@ -1,40 +1,35 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import os
-import sys
-from dotenv import load_dotenv
 
-# Add Purchase directory to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'Purchase'))
+# ---- Routers ----
+from category.category_routes import router as category_router
+from supplier.supplier_routes import router as supplier_router
+from store_location.store_location_routes import router as location_router
+from item.item_routes import router as item_router
+from stock.stock_routes import router as stock_router
+from purchase.purchase_routes import router as purchase_router
+from issue.issue_routes import router as issue_router
+from stock_transfer.stock_transfer_routes import router as transfer_router
+from stock_adjustment.stock_adjustment_routes import router as adjustment_router
+from stock_audit.stock_audit_routes import router as audit_router
 
-from database import init_db
-from Purchase_routes import router as po_router
-
-load_dotenv()
-
-app = FastAPI(title="Hospital Management - Inventory", version="1.0.0")
-
-# CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+app = FastAPI(
+    title="Hospital Inventory Management System",
+    version="1.0.0"
 )
 
-# Initialize database
-init_db()
+# ---- Register Routers ----
+app.include_router(category_router)
+app.include_router(supplier_router)
+app.include_router(location_router)
+app.include_router(item_router)
+app.include_router(stock_router)
+app.include_router(purchase_router)
+app.include_router(issue_router)
+app.include_router(transfer_router)
+app.include_router(adjustment_router)
+app.include_router(audit_router)
 
-# Include routers
-app.include_router(po_router)
-
-
-@app.get("/health")
-def health():
-    return {"status": "ok"}
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# ---- Root API ----
+@app.get("/")
+def root():
+    return {"message": "Inventory Management API is running"}
