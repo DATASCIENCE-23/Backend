@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy import Column, Integer, String, Numeric, Boolean, DateTime, Date, Text, ForeignKey, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from enum import Enum
-from database import Base
+from ..database import Base
 
 class Pharmacist(Base):
     __tablename__ = "pharmacist"

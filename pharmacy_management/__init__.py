@@ -5,11 +5,10 @@ Exports ORM models and schemas for easy import.
 
 # MODELS
 from .medicine import Medicine, MedicineBatch,  MedicineRepository, MedicineBatchRepository, MedicineService, MedicineController, get_medicine_controller
-from .dispense import Dispense, DispenseItem, DispenseRepository, DispenseItemRepository, DispenseService, DispenseController, get_dispense_controller
+from .dispense import Dispense, DispenseItem, DispenseRepository, DispenseItemRepository, DispenseService, DispenseController
 from .pharmacist import Pharmacist, PharmacistRepository, PharmacistService, PharmacistController, get_pharmacist_controller
-from .audit import PharmacyAuditLog, PharmacyAuditRepository, PharmacyAuditService, PharmacyAuditController, get_audit_controller
+from .audit import PharmacyAuditLog, PharmacyAuditRepository, PharmacyAuditService, PharmacyAuditController
 
-from Electronic_Medical_Records_Management import Prescription, PrescriptionItem
 
 
 # SCHEMAS (pharmacy-schema.py)
@@ -62,9 +61,7 @@ __all__ = [
     "PharmacyAuditController",
     #configurations
     "get_medicine_controller",
-    "get_dispense_controller",
     "get_pharmacist_controller",
-    "get_audit_controller",
     # schemas
     "MedicineCreate",
     "MedicineUpdate",
@@ -85,9 +82,5 @@ __all__ = [
     "MedicineStatusEnum",
     "PrescriptionStatusEnum",
     "DispenseStatusEnum",
-    #prescription models
-
-    "Prescription",
-    "PrescriptionItem"
-
+    
 ]

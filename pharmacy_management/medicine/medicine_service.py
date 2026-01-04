@@ -9,7 +9,7 @@ from datetime import date
 from sqlalchemy.orm import Session
 
 from . import Medicine, MedicineBatch
-from .. import (
+from ..schemas import (
     MedicineCreate,
     MedicineUpdate,
     MedicineResponse,
@@ -18,7 +18,7 @@ from .. import (
     LowStockMedicine,
     MedicineSearchResponse,
 )
-from .medicine import MedicineRepository, MedicineBatchRepository
+from ..medicine import MedicineRepository, MedicineBatchRepository
 
 
 class MedicineService:

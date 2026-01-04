@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey
 from datetime import datetime
-from database import Base
+from ..database import Base
 from sqlalchemy.orm import relationship
 
 class MedicalRecord(Base):

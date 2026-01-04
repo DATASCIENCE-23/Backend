@@ -7,7 +7,7 @@ from typing import Generator
 
 from sqlalchemy.orm import Session
 
-from database import get_db  # your existing DB dependency
+from ..database import get_db  # your existing DB dependency
 from . import PharmacistController
 
 

@@ -9,16 +9,17 @@ from datetime import date
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from database import get_db
-from . import Pharmacist
-from .. import (
+from ..database import get_db
+from .pharmacist_model import Pharmacist  # ORM model (used only internally, not as response_model)
+from ..schemas import (
     MessageResponse,
     PharmacistCreate,
     PharmacistUpdate,
+    PharmacistRead,
     DispenseStatusEnum,
 )
-from . import get_pharmacist_controller
-from . import PharmacistController
+from .pharmacist_configuration import get_pharmacist_controller
+from .pharmacist_controller import PharmacistController  # or from . import PharmacistController if __init__ re-exports
 
 router = APIRouter(
     prefix="/pharmacy/pharmacists",
@@ -32,19 +33,17 @@ def _get_controller(db: Session = Depends(get_db)) -> PharmacistController:
 
 # ---------- Pharmacist CRUD ----------
 
-
 @router.post(
     "/",
-    response_model=Pharmacist,
+    response_model=PharmacistRead,
     status_code=status.HTTP_201_CREATED,
 )
 def create_pharmacist(
-    data: dict,  # or PharmacistCreate
+    data: PharmacistCreate,
     controller: PharmacistController = Depends(_get_controller),
 ):
     """
     Create a pharmacist.
-    In a real app, replace `dict` with PharmacistCreate schema.
     """
     try:
         return controller.create_pharmacist(data)
@@ -57,7 +56,7 @@ def create_pharmacist(
 
 @router.get(
     "/{pharmacist_id}",
-    response_model=Pharmacist,
+    response_model=PharmacistRead,
 )
 def get_pharmacist(
     pharmacist_id: int,
@@ -74,7 +73,7 @@ def get_pharmacist(
 
 @router.get(
     "/",
-    response_model=List[Pharmacist],
+    response_model=List[PharmacistRead],
 )
 def list_pharmacists(
     active_only: bool = True,
@@ -91,11 +90,11 @@ def list_pharmacists(
 
 @router.put(
     "/{pharmacist_id}",
-    response_model=Pharmacist,
+    response_model=PharmacistRead,
 )
 def update_pharmacist(
     pharmacist_id: int,
-    data: dict,  # or PharmacistUpdate
+    data: PharmacistUpdate,
     controller: PharmacistController = Depends(_get_controller),
 ):
     try:
@@ -133,7 +132,6 @@ def deactivate_pharmacist(
 
 # ---------- Dispense-related endpoints ----------
 
-
 @router.get(
     "/{pharmacist_id}/dispenses",
     response_model=List[dict],  # you can define a proper schema later
@@ -151,7 +149,6 @@ def get_dispenses_by_pharmacist(
         start_date=start_date,
         end_date=end_date,
     )
-    # For now return as raw list; you can map to a schema similar to DispenseResponse
     return [
         {
             "dispense_id": d.dispense_id,

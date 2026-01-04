@@ -7,16 +7,16 @@ from sqlalchemy import func, desc
 from typing import List, Optional, Tuple
 
 from datetime import datetime, date, timedelta
-from .. import (
+from Electronic_Medical_Records_Management import (
     Prescription,
     PrescriptionItem,
-    Dispense,
-    DispenseItem,
-    DispenseStatusEnum,
-    PrescriptionStatusEnum
 )
-from medicine import MedicineBatchRepository  # adjust import path
+from . import Dispense, DispenseItem  # adjust import path
 
+from .. import MedicineBatchRepository  # adjust import path
+from ..schemas import (
+    DispenseStatusEnum,
+    PrescriptionStatusEnum,)
 
 class DispenseRepository:
     """Repository for Dispense operations"""

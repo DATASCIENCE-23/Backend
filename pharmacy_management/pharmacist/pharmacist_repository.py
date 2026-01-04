@@ -7,11 +7,9 @@ from sqlalchemy import func, desc
 from datetime import date
 from typing import List, Optional
 
-from .. import (
-    Dispense, 
-    Pharmacist
-)
-from schemas import DispenseStatus
+from ..dispense import Dispense
+from . import Pharmacist
+from ..schemas import DispenseStatusEnum as DispenseStatus
 
 
 class PharmacistRepository:

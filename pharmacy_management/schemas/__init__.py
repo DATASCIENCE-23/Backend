@@ -39,7 +39,10 @@ from .schemas import (
 
     #Pharmacist
     PharmacistCreate,
-    PharmacistUpdate
+    PharmacistUpdate,
+    PharmacistBase,
+    PharmacistRead
+
 )
 
 __all__ = [
@@ -64,4 +67,6 @@ __all__ = [
     "ErrorResponse",
     "PharmacistCreate",
     "PharmacistUpdate",
+    "PharmacistBase",
+    "PharmacistRead",
 ]

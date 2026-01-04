@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Date, Boolean, Enum, UniqueConstraint
-from database import Base
+from ..database import Base
 
 class Patient(Base):
     __tablename__ = "patient"

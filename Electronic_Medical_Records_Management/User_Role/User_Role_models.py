@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Date, ForeignKey
-from database import Base
+from ..database import Base
 from datetime import date
 
 class UserRole(Base):

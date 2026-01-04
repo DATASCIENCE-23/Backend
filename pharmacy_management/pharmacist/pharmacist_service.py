@@ -8,10 +8,11 @@ from datetime import date
 
 from sqlalchemy.orm import Session
 
-from .. import Pharmacist, Dispense
+from . import Pharmacist
+from ..dispense import Dispense
 
 from . import PharmacistRepository
-from .. import DispenseStatusEnum  # if you want enum on service side
+from ..schemas import DispenseStatusEnum  # if you want enum on service side
 
 
 class PharmacistService:

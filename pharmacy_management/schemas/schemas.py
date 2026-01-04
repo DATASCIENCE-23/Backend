@@ -233,25 +233,26 @@ class ErrorResponse(BaseModel):
 
 # ============ PHARMACIST SCHEMAS ============
 
-class PharmacistCreate(BaseModel):
-    user_id: int = Field(..., gt=0)
-    first_name: str = Field(..., min_length=1, max_length=100)
-    last_name: str = Field(..., min_length=1, max_length=100)
-    employee_code: str = Field(..., min_length=1, max_length=50)
-    license_number: str = Field(..., min_length=1, max_length=50)
-    phone_number: Optional[str] = Field(None, max_length=20)
-    email: Optional[EmailStr] = Field(None)
+class PharmacistBase(BaseModel):
+    name: str
+    email: str
+    phone: str
     is_active: bool = True
 
+class PharmacistCreate(PharmacistBase):
+    password: str
 
 class PharmacistUpdate(BaseModel):
-    first_name: Optional[str] = Field(None, min_length=1, max_length=100)
-    last_name: Optional[str] = Field(None, min_length=1, max_length=100)
-    employee_code: Optional[str] = Field(None, min_length=1, max_length=50)
-    license_number: Optional[str] = Field(None, min_length=1, max_length=50)
-    phone_number: Optional[str] = Field(None, max_length=20)
-    email: Optional[EmailStr] = Field(None)
-    is_active: Optional[bool] = None
+    name: str | None = None
+    email: str | None = None
+    phone: str | None = None
+    is_active: bool | None = None
+
+class PharmacistRead(PharmacistBase):
+    id: int
+
+    class Config:
+        from_attributes = True  # orm_mode=True in Pydantic v1
 
 # ============ PRESCRIPTION SCHEMAS ============
 

@@ -8,14 +8,13 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from database import get_db
+from ..database import get_db
 from .. import (
     DispenseCreate,
     DispenseResponse,
     DispenseItemResponse,
     DispenseBillingInfo,
 )
-from . import get_dispense_controller
 from .import DispenseController
 
 router = APIRouter(prefix="/pharmacy/dispense", tags=["Pharmacy - Dispense"])

@@ -1,28 +1,16 @@
-"""
-Pharmacy Module - Audit Configuration
-Provides dependency helpers for Audit Controller/Service
-"""
+# pharmacy_management/audit/audit_configuration.py
 
-from typing import Generator
-
+from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from database import get_db  # your existing session dependency
-from .import PharmacyAuditController
+from ..database import get_db
+from .audit_controller import PharmacyAuditController  # adjust name
 
-
-def get_audit_controller(db: Session = None) -> PharmacyAuditController:
+def get_audit_controller(
+    db: Session = Depends(get_db),
+) -> PharmacyAuditController:
     """
-    FastAPI-friendly dependency to get a PharmacyAuditController.
-
-    Usage in routes:
-        @router.get(...)
-        def handler(controller: PharmacyAuditController = Depends(get_audit_controller)):
-            ...
+    Dependency that creates a PharmacyAuditController using a DB session.
+    This is where Session is used, and only as a dependency argument.
     """
-    # If used with FastAPI Depends, db will be injected by get_db
-    if db is None:
-        # Fallback for manual usage (non-FastAPI contexts)
-        db_gen: Generator[Session, None, None] = get_db()
-        db = next(db_gen)
     return PharmacyAuditController(db)

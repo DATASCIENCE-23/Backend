@@ -7,11 +7,11 @@ from typing import List, Optional
 
 from sqlalchemy.orm import Session
 
-from .. import (
+from . import (
     Dispense,
     DispenseItem,
 )
-from .. import (
+from ..schemas import (
     DispenseCreate,
     DispenseResponse,
     DispenseItemResponse,

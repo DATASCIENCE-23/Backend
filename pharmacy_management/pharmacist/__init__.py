@@ -5,4 +5,4 @@ from .pharmacist_service import PharmacistService
 from .pharmacist_controller import PharmacistController
 from .pharmacist_configuration import get_pharmacist_controller
 
-__all__ = ["Pharmacist", "PharmacistRepository", "PharmacistService", "PharmacistController", "get_pharmacist_controller"]
+__all__ = ["Pharmacist", "PharmacistRepository", "PharmacistService", "PharmacistController", "get_pharmacist_controller", "Dispense"]

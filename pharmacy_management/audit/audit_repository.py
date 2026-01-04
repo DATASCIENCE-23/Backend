@@ -2,9 +2,8 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func, and_, or_, desc
 from typing import List, Optional, Tuple
 from datetime import datetime, date, timedelta
-from .. import (
-    PharmacyAuditLog
-)
+from . import PharmacyAuditLog
+
 class PharmacyAuditRepository:
     """Repository for Audit Log operations"""
 

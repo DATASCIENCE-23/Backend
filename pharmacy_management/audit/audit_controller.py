@@ -7,8 +7,8 @@ from typing import List, Optional, Dict, Any
 
 from sqlalchemy.orm import Session
 
-from .. import PharmacyAuditLog  # model exported from pharmacy/__init__.py
-from .. import PharmacyAuditService
+from . import PharmacyAuditLog  # model exported from pharmacy/__init__.py
+from . import PharmacyAuditService
 
 
 class PharmacyAuditController:
