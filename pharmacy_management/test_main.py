@@ -17,6 +17,9 @@ from .Doctor.Doctor_routes import router as doctor_router
 from .Patient.Patient_routes import router as patient_router
 from .Prescription.Prescription_routes import router as prescription_router
 from .Prescription_Item.Prescription_Item_routes import router as prescription_item_router
+from .invoice.routes import router as invoice_router
+from .Service_master.Service_routes import router as service_router
+from .Invoice_line_item.controller import router as line_item_router
 
 from pharmacy_management.database import Base, engine  # ✅
 

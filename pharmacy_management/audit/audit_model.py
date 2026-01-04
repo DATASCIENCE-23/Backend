@@ -9,7 +9,7 @@ class PharmacyAuditLog(Base):
     __tablename__ = "pharmacy_audit_log"
 
     log_id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("user.user_id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
     entity_name = Column(String(100), nullable=False)  # Medicine, Prescription, Dispense
     entity_id = Column(Integer, nullable=False)
     action_type = Column(String(50), nullable=False)  # CREATE, UPDATE, DELETE, DISPENSE

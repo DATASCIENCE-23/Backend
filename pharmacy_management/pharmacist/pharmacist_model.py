@@ -9,7 +9,7 @@ class Pharmacist(Base):
     __tablename__ = "pharmacist"
 
     pharmacist_id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("user.user_id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
     first_name = Column(String(100), nullable=False)
     last_name = Column(String(100), nullable=False)
     employee_code = Column(String(50), unique=True, nullable=False)

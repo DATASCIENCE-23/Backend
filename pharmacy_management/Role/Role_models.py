@@ -12,7 +12,6 @@ class RoleName(enum.Enum):
 
 class Role(Base):
     __tablename__ = "role"
-    __table_args__ = {"schema": "hms"}
 
     role_id = Column(Integer, primary_key=True, autoincrement=True)
 
