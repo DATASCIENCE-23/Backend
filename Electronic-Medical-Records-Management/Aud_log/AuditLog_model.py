@@ -6,9 +6,10 @@ from database import Base
 
 class AuditLog(Base):
     __tablename__ = "audit_log"
+    __table_args__ = {"schema": "hms"}   # ✅ ADD THIS
 
     log_id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.user_id", ondelete="SET NULL"), nullable=True, index=True)
+    user_id = Column(Integer, ForeignKey("hms.users.user_id", ondelete="SET NULL"), nullable=True, index=True)
     entity_name = Column(String(100), nullable=True)  # e.g., "Patient", "MedicalRecord"
     entity_id = Column(Integer, nullable=True)  # ID of the entity affected
     action_time = Column(DateTime(timezone=True), default=datetime.utcnow, nullable=False, index=True)
