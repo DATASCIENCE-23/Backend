@@ -1,0 +1,375 @@
+"""
+Pharmacy Module - Alembic Database Migrations Setup
+Handles database schema versioning and migrations
+"""
+
+# ==================== alembic.ini ====================
+"""
+[alembic]
+script_location = migrations
+prepend_sys_path = .
+version_path_separator = os
+
+sqlalchemy.url = postgresql://postgres:password@localhost:5432/hospital_pharmacy
+
+[post_write_hooks]
+
+[loggers]
+keys = root,sqlalchemy,alembic
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = WARN
+handlers = console
+qualname =
+
+[logger_sqlalchemy]
+level = WARN
+handlers =
+qualname = sqlalchemy.engine
+
+[logger_alembic]
+level = INFO
+handlers =
+qualname = alembic
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(levelname)-5.5s [%(name)s] %(message)s
+datefmt = %H:%M:%S
+"""
+
+# ==================== migrations/env.py ====================
+from logging.config import fileConfig
+from sqlalchemy import engine_from_config
+from sqlalchemy import pool
+from alembic import context
+import sys
+import os
+
+# Add parent directory to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+
+from config import get_database_url
+from models import Base
+
+# this is the Alembic Config object
+config = context.config
+
+# Override sqlalchemy.url with our database URL from config
+config.set_main_option('sqlalchemy.url', get_database_url())
+
+# Interpret the config file for Python logging
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
+
+# Add your model's MetaData object here for 'autogenerate' support
+target_metadata = Base.metadata
+
+
+def run_migrations_offline() -> None:
+    """Run migrations in 'offline' mode."""
+    url = config.get_main_option("sqlalchemy.url")
+    context.configure(
+        url=url,
+        target_metadata=target_metadata,
+        literal_binds=True,
+        dialect_opts={"paramstyle": "named"},
+    )
+
+    with context.begin_transaction():
+        context.run_migrations()
+
+
+def run_migrations_online() -> None:
+    """Run migrations in 'online' mode."""
+    connectable = engine_from_config(
+        config.get_section(config.config_ini_section, {}),
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
+
+    with connectable.connect() as connection:
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata
+        )
+
+        with context.begin_transaction():
+            context.run_migrations()
+
+
+if context.is_offline_mode():
+    run_migrations_offline()
+else:
+    run_migrations_online()
+
+
+# ==================== migrations/script.py.mako ====================
+"""${message}
+
+Revision ID: ${up_revision}
+Revises: ${down_revision | comma,n}
+Create Date: ${create_date}
+
+"""
+from alembic import op
+import sqlalchemy as sa
+${imports if imports else ""}
+
+# revision identifiers, used by Alembic.
+revision = ${repr(up_revision)}
+down_revision = ${repr(down_revision)}
+branch_labels = ${repr(branch_labels)}
+depends_on = ${repr(depends_on)}
+
+
+def upgrade() -> None:
+    ${upgrades if upgrades else "pass"}
+
+
+def downgrade() -> None:
+    ${downgrades if downgrades else "pass"}
+
+
+# ==================== Initial Migration Example ====================
+# migrations/versions/001_initial_pharmacy_schema.py
+
+"""Initial pharmacy schema
+
+Revision ID: 001_initial
+Revises:
+Create Date: 2025-01-01 00:00:00.000000
+
+"""
+from alembic import op
+import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
+
+revision = '001_initial'
+down_revision = None
+branch_labels = None
+depends_on = None
+
+
+def upgrade() -> None:
+    # Create ENUM types
+    op.execute("CREATE TYPE medicine_status AS ENUM ('active', 'inactive', 'discontinued')")
+    op.execute("CREATE TYPE prescription_status AS ENUM ('pending', 'in_progress', 'completed', 'partially_completed', 'cancelled')")
+    op.execute("CREATE TYPE dispense_status AS ENUM ('pending', 'completed', 'billed')")
+
+    # Create pharmacist table
+    op.create_table(
+        'pharmacist',
+        sa.Column('pharmacist_id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('user_id', sa.Integer(), nullable=False),
+        sa.Column('first_name', sa.String(length=100), nullable=False),
+        sa.Column('last_name', sa.String(length=100), nullable=False),
+        sa.Column('employee_code', sa.String(length=50), nullable=False),
+        sa.Column('license_number', sa.String(length=50), nullable=False),
+        sa.Column('phone_number', sa.String(length=20)),
+        sa.Column('email', sa.String(length=100)),
+        sa.Column('is_active', sa.Boolean(), nullable=False, default=True),
+        sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+        sa.PrimaryKeyConstraint('pharmacist_id'),
+        sa.UniqueConstraint('employee_code'),
+        sa.UniqueConstraint('license_number'),
+        sa.ForeignKeyConstraint(['user_id'], ['user.user_id'])
+    )
+
+    # Create medicine table
+    op.create_table(
+        'medicine',
+        sa.Column('medicine_id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('medicine_name', sa.String(length=200), nullable=False),
+        sa.Column('generic_name', sa.String(length=200), nullable=False),
+        sa.Column('strength', sa.String(length=50), nullable=False),
+        sa.Column('form', sa.String(length=50), nullable=False),
+        sa.Column('shelf_location', sa.String(length=50)),
+        sa.Column('unit_price', sa.Numeric(10, 2), nullable=False),
+        sa.Column('is_active', sa.Boolean(), nullable=False, default=True),
+        sa.Column('min_quantity', sa.Integer(), default=10),
+        sa.Column('reorder_level', sa.Integer(), default=20),
+        sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+        sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+        sa.Column('created_by', sa.Integer()),
+        sa.Column('updated_by', sa.Integer()),
+        sa.PrimaryKeyConstraint('medicine_id'),
+        sa.ForeignKeyConstraint(['created_by'], ['user.user_id']),
+        sa.ForeignKeyConstraint(['updated_by'], ['user.user_id'])
+    )
+
+    # Create unique constraint on medicine name+strength+form
+    op.create_index('idx_medicine_unique', 'medicine', ['medicine_name', 'strength', 'form'], unique=True)
+
+    # Create medicine_batch table
+    op.create_table(
+        'medicine_batch',
+        sa.Column('batch_id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('medicine_id', sa.Integer(), nullable=False),
+        sa.Column('batch_number', sa.String(length=50), nullable=False),
+        sa.Column('quantity_in_stock', sa.Integer(), nullable=False, default=0),
+        sa.Column('manufacture_date', sa.Date(), nullable=False),
+        sa.Column('expiry_date', sa.Date(), nullable=False),
+        sa.Column('purchase_price', sa.Numeric(10, 2), nullable=False),
+        sa.Column('is_active', sa.Boolean(), nullable=False, default=True),
+        sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+        sa.PrimaryKeyConstraint('batch_id'),
+        sa.UniqueConstraint('batch_number'),
+        sa.ForeignKeyConstraint(['medicine_id'], ['medicine.medicine_id'], ondelete='CASCADE')
+    )
+
+    # Create prescription table
+    op.create_table(
+        'prescription',
+        sa.Column('prescription_id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('record_id', sa.Integer()),
+        sa.Column('patient_id', sa.Integer(), nullable=False),
+        sa.Column('doctor_id', sa.Integer(), nullable=False),
+        sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+        sa.Column('status', postgresql.ENUM('pending', 'in_progress', 'completed', 'partially_completed', 'cancelled', name='prescription_status'), nullable=False),
+        sa.Column('notes', sa.Text()),
+        sa.Column('external_ref', sa.String(length=100)),
+        sa.PrimaryKeyConstraint('prescription_id'),
+        sa.ForeignKeyConstraint(['record_id'], ['medical_record.record_id']),
+        sa.ForeignKeyConstraint(['patient_id'], ['patient.patient_id']),
+        sa.ForeignKeyConstraint(['doctor_id'], ['doctor.doctor_id'])
+    )
+
+    # Create prescription_item table
+    op.create_table(
+        'prescription_item',
+        sa.Column('prescription_item_id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('prescription_id', sa.Integer(), nullable=False),
+        sa.Column('medicine_id', sa.Integer(), nullable=False),
+        sa.Column('prescribed_quantity', sa.Integer(), nullable=False),
+        sa.Column('dosage', sa.String(length=100), nullable=False),
+        sa.Column('frequency', sa.String(length=100), nullable=False),
+        sa.Column('duration_days', sa.Integer(), nullable=False),
+        sa.Column('instructions', sa.Text()),
+        sa.PrimaryKeyConstraint('prescription_item_id'),
+        sa.ForeignKeyConstraint(['prescription_id'], ['prescription.prescription_id'], ondelete='CASCADE'),
+        sa.ForeignKeyConstraint(['medicine_id'], ['medicine.medicine_id'])
+    )
+
+    # Create dispense table
+    op.create_table(
+        'dispense',
+        sa.Column('dispense_id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('prescription_id', sa.Integer(), nullable=False),
+        sa.Column('pharmacist_id', sa.Integer(), nullable=False),
+        sa.Column('dispensed_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+        sa.Column('total_amount', sa.Numeric(10, 2), nullable=False),
+        sa.Column('status', postgresql.ENUM('pending', 'completed', 'billed', name='dispense_status'), nullable=False),
+        sa.Column('invoice_id', sa.Integer()),
+        sa.Column('notes', sa.Text()),
+        sa.PrimaryKeyConstraint('dispense_id'),
+        sa.ForeignKeyConstraint(['prescription_id'], ['prescription.prescription_id']),
+        sa.ForeignKeyConstraint(['pharmacist_id'], ['pharmacist.pharmacist_id']),
+        sa.ForeignKeyConstraint(['invoice_id'], ['invoice.invoice_id'])
+    )
+
+    # Create dispense_item table
+    op.create_table(
+        'dispense_item',
+        sa.Column('dispense_item_id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('dispense_id', sa.Integer(), nullable=False),
+        sa.Column('prescription_item_id', sa.Integer(), nullable=False),
+        sa.Column('batch_id', sa.Integer(), nullable=False),
+        sa.Column('dispensed_quantity', sa.Integer(), nullable=False),
+        sa.Column('unit_price', sa.Numeric(10, 2), nullable=False),
+        sa.Column('line_total', sa.Numeric(10, 2), nullable=False),
+        sa.PrimaryKeyConstraint('dispense_item_id'),
+        sa.ForeignKeyConstraint(['dispense_id'], ['dispense.dispense_id'], ondelete='CASCADE'),
+        sa.ForeignKeyConstraint(['prescription_item_id'], ['prescription_item.prescription_item_id']),
+        sa.ForeignKeyConstraint(['batch_id'], ['medicine_batch.batch_id'])
+    )
+
+    # Create pharmacy_audit_log table
+    op.create_table(
+        'pharmacy_audit_log',
+        sa.Column('log_id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('user_id', sa.Integer(), nullable=False),
+        sa.Column('entity_name', sa.String(length=100), nullable=False),
+        sa.Column('entity_id', sa.Integer(), nullable=False),
+        sa.Column('action_type', sa.String(length=50), nullable=False),
+        sa.Column('action_time', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+        sa.Column('ip_address', sa.String(length=50)),
+        sa.Column('details', sa.Text()),
+        sa.PrimaryKeyConstraint('log_id'),
+        sa.ForeignKeyConstraint(['user_id'], ['user.user_id'])
+    )
+
+    # Create indexes for performance
+    op.create_index('idx_medicine_name', 'medicine', ['medicine_name'])
+    op.create_index('idx_medicine_active', 'medicine', ['is_active'])
+    op.create_index('idx_batch_medicine', 'medicine_batch', ['medicine_id'])
+    op.create_index('idx_batch_expiry', 'medicine_batch', ['expiry_date'])
+    op.create_index('idx_prescription_status', 'prescription', ['status'])
+    op.create_index('idx_prescription_patient', 'prescription', ['patient_id'])
+    op.create_index('idx_prescription_doctor', 'prescription', ['doctor_id'])
+    op.create_index('idx_dispense_prescription', 'dispense', ['prescription_id'])
+    op.create_index('idx_dispense_status', 'dispense', ['status'])
+    op.create_index('idx_audit_entity', 'pharmacy_audit_log', ['entity_name', 'entity_id'])
+    op.create_index('idx_audit_time', 'pharmacy_audit_log', ['action_time'])
+
+
+def downgrade() -> None:
+    # Drop tables in reverse order
+    op.drop_table('pharmacy_audit_log')
+    op.drop_table('dispense_item')
+    op.drop_table('dispense')
+    op.drop_table('prescription_item')
+    op.drop_table('prescription')
+    op.drop_table('medicine_batch')
+    op.drop_table('medicine')
+    op.drop_table('pharmacist')
+
+    # Drop ENUM types
+    op.execute("DROP TYPE IF EXISTS dispense_status")
+    op.execute("DROP TYPE IF EXISTS prescription_status")
+    op.execute("DROP TYPE IF EXISTS medicine_status")
+
+
+# ==================== Alembic Commands Reference ====================
+"""
+# Initialize Alembic (first time only)
+alembic init migrations
+
+# Create a new migration
+alembic revision --autogenerate -m "Description of changes"
+
+# Apply all pending migrations
+alembic upgrade head
+
+# Apply migrations up to a specific revision
+alembic upgrade <revision_id>
+
+# Rollback one migration
+alembic downgrade -1
+
+# Rollback to a specific revision
+alembic downgrade <revision_id>
+
+# View migration history
+alembic history
+
+# View current revision
+alembic current
+
+# Show SQL that would be executed (without running)
+alembic upgrade head --sql
+
+# Stamp database with specific revision (without running migrations)
+alembic stamp head
+"""
