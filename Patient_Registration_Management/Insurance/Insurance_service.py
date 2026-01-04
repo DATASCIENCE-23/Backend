@@ -1,48 +1,36 @@
 from sqlalchemy.orm import Session
-from Insurance_model import Insurance
-from Insurance_repository import InsuranceRepository
-#from Repository.Patient_repository import PatientRepository
+from .Insurance_model import Insurance
+from .Insurance_repository import InsuranceRepository
 
 class InsuranceService:
+    def __init__(self, db: Session):
+        self.db = db
 
-    @staticmethod
-    def create_insurance(db: Session, data: dict):
-        # Check if patient exists
-        #if not PatientRepository.get_by_id(db, data["patient_id"]):
-        #    raise ValueError("Patient not found")
-
-        if InsuranceRepository.get_by_policy_number(db, data["policy_number"]):
+    def create_insurance(self, data: dict):
+        if InsuranceRepository.get_by_policy_number(self.db, data["policy_number"]):
             raise ValueError("Insurance with this policy number already exists")
-
         insurance = Insurance(**data)
-        return InsuranceRepository.create(db, insurance)
+        return InsuranceRepository.create(self.db, insurance)
 
-    @staticmethod
-    def get_insurance(db: Session, insurance_id: int):
-        insurance = InsuranceRepository.get_by_id(db, insurance_id)
+    def get_insurance(self, insurance_id: int):
+        insurance = InsuranceRepository.get_by_id(self.db, insurance_id)
         if not insurance:
             raise ValueError("Insurance not found")
         return insurance
 
-    @staticmethod
-    def list_insurances(db: Session):
-        return InsuranceRepository.get_all(db)
+    def list_insurances(self):
+        return InsuranceRepository.get_all(self.db)
 
-    @staticmethod
-    def update_insurance(db: Session, insurance_id: int, data: dict):
-        insurance = InsuranceRepository.get_by_id(db, insurance_id)
+    def update_insurance(self, insurance_id: int, data: dict):
+        insurance = InsuranceRepository.get_by_id(self.db, insurance_id)
         if not insurance:
             raise ValueError("Insurance not found")
-
         for key, value in data.items():
             setattr(insurance, key, value)
+        return InsuranceRepository.update(self.db, insurance)
 
-        return InsuranceRepository.update(db, insurance)
-
-    @staticmethod
-    def delete_insurance(db: Session, insurance_id: int):
-        insurance = InsuranceRepository.get_by_id(db, insurance_id)
+    def delete_insurance(self, insurance_id: int):
+        insurance = InsuranceRepository.get_by_id(self.db, insurance_id)
         if not insurance:
             raise ValueError("Insurance not found")
-
-        InsuranceRepository.delete(db, insurance)
+        InsuranceRepository.delete(self.db, insurance)
