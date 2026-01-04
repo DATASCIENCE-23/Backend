@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, UniqueConstraint
+from sqlalchemy.orm import relationship
 from BUDGET.database import Base
 
 class Budget(Base):
@@ -17,4 +18,15 @@ class Budget(Base):
             "department",
             name="uq_budget_year_department"
         ),
+    )
+
+    # -------------------------
+    # Relationships
+    # -------------------------
+
+    # One Budget → Many Budget Lines
+    budget_lines = relationship(
+        "BudgetLine",
+        back_populates="budget",
+        cascade="all, delete-orphan"
     )
