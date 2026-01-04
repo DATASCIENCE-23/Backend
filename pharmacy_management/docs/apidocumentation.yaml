@@ -1,0 +1,1591 @@
+openapi: 3.0.0
+info:
+  title: Hospital Management System API
+  version: 1.0.0
+  description: Merged OpenAPI specification for all modules
+servers:
+- url: http://localhost:8000/api/v1
+tags:
+- name: Audit
+  description: Audit log management operations
+- name: Dispense
+  description: Dispense management operations
+- name: Doctor
+  description: Doctor management operations
+- name: Medicine
+  description: Medicine management operations
+- name: Patient
+  description: Patient management operations
+- name: PrescriptionItem
+  description: Prescription item management operations
+- name: Pharmacist
+  description: Pharmacist management operations
+- name: Prescription
+  description: Prescription management operations
+- name: Role
+  description: Role management operations
+- name: User
+  description: User management operations
+- name: UserRole
+  description: User role mapping operations
+paths:
+  /audits:
+    get:
+      tags:
+      - Audit
+      summary: Get all audit logs
+      operationId: getAudits
+      parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      responses:
+        '200':
+          description: List of audit logs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditListResponse'
+    post:
+      tags:
+      - Audit
+      summary: Create an audit log
+      operationId: createAudit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuditRequest'
+      responses:
+        '201':
+          description: Audit log created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditResponse'
+  /audits/{id}:
+    get:
+      tags:
+      - Audit
+      summary: Get audit log by ID
+      operationId: getAuditById
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '200':
+          description: Audit log details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditResponse'
+    delete:
+      tags:
+      - Audit
+      summary: Delete audit log by ID
+      operationId: deleteAudit
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '204':
+          description: Audit log deleted successfully
+  /dispenses:
+    get:
+      tags:
+      - Dispense
+      summary: Get all dispenses
+      operationId: getDispenses
+      parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      responses:
+        '200':
+          description: List of dispenses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DispenseListResponse'
+    post:
+      tags:
+      - Dispense
+      summary: Create a dispense record
+      operationId: createDispense
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DispenseRequest'
+      responses:
+        '201':
+          description: Dispense record created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DispenseResponse'
+  /dispenses/{id}:
+    get:
+      tags:
+      - Dispense
+      summary: Get dispense by ID
+      operationId: getDispenseById
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '200':
+          description: Dispense details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DispenseResponse'
+    patch:
+      tags:
+      - Dispense
+      summary: Update dispense by ID
+      operationId: updateDispense
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DispenseUpdateRequest'
+      responses:
+        '200':
+          description: Dispense updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DispenseResponse'
+    delete:
+      tags:
+      - Dispense
+      summary: Delete dispense by ID
+      operationId: deleteDispense
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '204':
+          description: Dispense deleted successfully
+  /doctors:
+    get:
+      tags:
+      - Doctor
+      summary: Get all doctors
+      operationId: getDoctors
+      parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      responses:
+        '200':
+          description: List of doctors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoctorListResponse'
+    post:
+      tags:
+      - Doctor
+      summary: Create a doctor
+      operationId: createDoctor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoctorRequest'
+      responses:
+        '201':
+          description: Doctor created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoctorResponse'
+  /doctors/{id}:
+    get:
+      tags:
+      - Doctor
+      summary: Get doctor by ID
+      operationId: getDoctorById
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '200':
+          description: Doctor details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoctorResponse'
+    patch:
+      tags:
+      - Doctor
+      summary: Update doctor by ID
+      operationId: updateDoctor
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoctorUpdateRequest'
+      responses:
+        '200':
+          description: Doctor updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoctorResponse'
+    delete:
+      tags:
+      - Doctor
+      summary: Delete doctor by ID
+      operationId: deleteDoctor
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '204':
+          description: Doctor deleted successfully
+  /medicines:
+    get:
+      tags:
+      - Medicine
+      summary: Get all medicines
+      operationId: getMedicines
+      parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      responses:
+        '200':
+          description: List of medicines
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicineListResponse'
+    post:
+      tags:
+      - Medicine
+      summary: Create a medicine
+      operationId: createMedicine
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MedicineRequest'
+      responses:
+        '201':
+          description: Medicine created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicineResponse'
+  /medicines/{id}:
+    get:
+      tags:
+      - Medicine
+      summary: Get medicine by ID
+      operationId: getMedicineById
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '200':
+          description: Medicine details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicineResponse'
+    patch:
+      tags:
+      - Medicine
+      summary: Update medicine by ID
+      operationId: updateMedicine
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MedicineUpdateRequest'
+      responses:
+        '200':
+          description: Medicine updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicineResponse'
+    delete:
+      tags:
+      - Medicine
+      summary: Delete medicine by ID
+      operationId: deleteMedicine
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '204':
+          description: Medicine deleted successfully
+  /patients:
+    get:
+      tags:
+      - Patient
+      summary: Get all patients
+      operationId: getPatients
+      parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      responses:
+        '200':
+          description: List of patients
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientListResponse'
+    post:
+      tags:
+      - Patient
+      summary: Create a patient
+      operationId: createPatient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientRequest'
+      responses:
+        '201':
+          description: Patient created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientResponse'
+  /patients/{id}:
+    get:
+      tags:
+      - Patient
+      summary: Get patient by ID
+      operationId: getPatientById
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '200':
+          description: Patient details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientResponse'
+    patch:
+      tags:
+      - Patient
+      summary: Update patient by ID
+      operationId: updatePatient
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientUpdateRequest'
+      responses:
+        '200':
+          description: Patient updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientResponse'
+    delete:
+      tags:
+      - Patient
+      summary: Delete patient by ID
+      operationId: deletePatient
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '204':
+          description: Patient deleted successfully
+  /prescription-items:
+    get:
+      tags:
+      - PrescriptionItem
+      summary: Get all prescription items
+      operationId: getPrescriptionItems
+      parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      responses:
+        '200':
+          description: List of prescription items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrescriptionItemListResponse'
+    post:
+      tags:
+      - PrescriptionItem
+      summary: Create a prescription item
+      operationId: createPrescriptionItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrescriptionItemRequest'
+      responses:
+        '201':
+          description: Prescription item created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrescriptionItemResponse'
+  /prescription-items/{id}:
+    get:
+      tags:
+      - PrescriptionItem
+      summary: Get prescription item by ID
+      operationId: getPrescriptionItemById
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '200':
+          description: Prescription item details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrescriptionItemResponse'
+    patch:
+      tags:
+      - PrescriptionItem
+      summary: Update prescription item by ID
+      operationId: updatePrescriptionItem
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrescriptionItemUpdateRequest'
+      responses:
+        '200':
+          description: Prescription item updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrescriptionItemResponse'
+    delete:
+      tags:
+      - PrescriptionItem
+      summary: Delete prescription item by ID
+      operationId: deletePrescriptionItem
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '204':
+          description: Prescription item deleted successfully
+  /pharmacists:
+    get:
+      tags:
+      - Pharmacist
+      summary: Get all pharmacists
+      operationId: getPharmacists
+      parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      responses:
+        '200':
+          description: List of pharmacists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PharmacistListResponse'
+    post:
+      tags:
+      - Pharmacist
+      summary: Create a pharmacist
+      operationId: createPharmacist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PharmacistRequest'
+      responses:
+        '201':
+          description: Pharmacist created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PharmacistResponse'
+  /pharmacists/{id}:
+    get:
+      tags:
+      - Pharmacist
+      summary: Get pharmacist by ID
+      operationId: getPharmacistById
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '200':
+          description: Pharmacist details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PharmacistResponse'
+    patch:
+      tags:
+      - Pharmacist
+      summary: Update pharmacist by ID
+      operationId: updatePharmacist
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PharmacistUpdateRequest'
+      responses:
+        '200':
+          description: Pharmacist updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PharmacistResponse'
+    delete:
+      tags:
+      - Pharmacist
+      summary: Delete pharmacist by ID
+      operationId: deletePharmacist
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '204':
+          description: Pharmacist deleted successfully
+  /prescriptions:
+    get:
+      tags:
+      - Prescription
+      summary: Get all prescriptions
+      operationId: getPrescriptions
+      parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      responses:
+        '200':
+          description: List of prescriptions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrescriptionListResponse'
+    post:
+      tags:
+      - Prescription
+      summary: Create a prescription
+      operationId: createPrescription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrescriptionRequest'
+      responses:
+        '201':
+          description: Prescription created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrescriptionResponse'
+  /prescriptions/{id}:
+    get:
+      tags:
+      - Prescription
+      summary: Get prescription by ID
+      operationId: getPrescriptionById
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '200':
+          description: Prescription details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrescriptionResponse'
+    patch:
+      tags:
+      - Prescription
+      summary: Update prescription by ID
+      operationId: updatePrescription
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrescriptionUpdateRequest'
+      responses:
+        '200':
+          description: Prescription updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrescriptionResponse'
+    delete:
+      tags:
+      - Prescription
+      summary: Delete prescription by ID
+      operationId: deletePrescription
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '204':
+          description: Prescription deleted successfully
+  /roles:
+    get:
+      tags:
+      - Role
+      summary: Get all roles
+      operationId: getRoles
+      parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      responses:
+        '200':
+          description: List of roles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleListResponse'
+    post:
+      tags:
+      - Role
+      summary: Create a role
+      operationId: createRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleRequest'
+      responses:
+        '201':
+          description: Role created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+  /roles/{id}:
+    get:
+      tags:
+      - Role
+      summary: Get role by ID
+      operationId: getRoleById
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '200':
+          description: Role details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+    patch:
+      tags:
+      - Role
+      summary: Update role by ID
+      operationId: updateRole
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleUpdateRequest'
+      responses:
+        '200':
+          description: Role updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+    delete:
+      tags:
+      - Role
+      summary: Delete role by ID
+      operationId: deleteRole
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '204':
+          description: Role deleted successfully
+  /users:
+    get:
+      tags:
+      - User
+      summary: Get all users
+      operationId: getUsers
+      parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+    post:
+      tags:
+      - User
+      summary: Create a user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+  /users/{id}:
+    get:
+      tags:
+      - User
+      summary: Get user by ID
+      operationId: getUserById
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+    patch:
+      tags:
+      - User
+      summary: Update user by ID
+      operationId: updateUser
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+    delete:
+      tags:
+      - User
+      summary: Delete user by ID
+      operationId: deleteUser
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '204':
+          description: User deleted successfully
+  /user-roles:
+    get:
+      tags:
+      - UserRole
+      summary: Get all user-role mappings
+      operationId: getUserRoles
+      parameters:
+      - $ref: '#/components/parameters/PageParameter'
+      - $ref: '#/components/parameters/LimitParameter'
+      responses:
+        '200':
+          description: List of user-role mappings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRoleListResponse'
+    post:
+      tags:
+      - UserRole
+      summary: Assign role to user
+      operationId: createUserRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRoleRequest'
+      responses:
+        '201':
+          description: User role created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRoleResponse'
+  /user-roles/{id}:
+    get:
+      tags:
+      - UserRole
+      summary: Get user-role by ID
+      operationId: getUserRoleById
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '200':
+          description: User-role details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRoleResponse'
+    patch:
+      tags:
+      - UserRole
+      summary: Update user-role by ID
+      operationId: updateUserRole
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRoleUpdateRequest'
+      responses:
+        '200':
+          description: User-role updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRoleResponse'
+    delete:
+      tags:
+      - UserRole
+      summary: Delete user-role by ID
+      operationId: deleteUserRole
+      parameters:
+      - $ref: '#/components/parameters/IdParameter'
+      responses:
+        '204':
+          description: User-role deleted successfully
+components:
+  parameters:
+    IdParameter:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    PageParameter:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 1
+    LimitParameter:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        default: 10
+  schemas:
+    CommonResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AuditRequest:
+      type: object
+      required:
+      - action
+      - entity
+      - entity_id
+      - performed_by
+      properties:
+        action:
+          type: string
+        entity:
+          type: string
+        entity_id:
+          type: integer
+        performed_by:
+          type: integer
+        description:
+          type: string
+        ip_address:
+          type: string
+    AuditResponse:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponse'
+      - type: object
+        properties:
+          action:
+            type: string
+          entity:
+            type: string
+          entity_id:
+            type: integer
+          performed_by:
+            type: integer
+          description:
+            type: string
+          ip_address:
+            type: string
+    AuditListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditResponse'
+    DispenseRequest:
+      type: object
+      required:
+      - prescription_id
+      - dispensed_by
+      properties:
+        prescription_id:
+          type: integer
+        dispensed_by:
+          type: integer
+        dispense_date:
+          type: string
+          format: date-time
+        remarks:
+          type: string
+        is_active:
+          type: boolean
+    DispenseUpdateRequest:
+      type: object
+      properties:
+        dispense_date:
+          type: string
+          format: date-time
+        remarks:
+          type: string
+        is_active:
+          type: boolean
+    DispenseResponse:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponse'
+      - type: object
+        properties:
+          prescription_id:
+            type: integer
+          dispensed_by:
+            type: integer
+          dispense_date:
+            type: string
+            format: date-time
+          remarks:
+            type: string
+          is_active:
+            type: boolean
+    DispenseListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DispenseResponse'
+    DoctorRequest:
+      type: object
+      required:
+      - name
+      - mobile
+      - specialization_id
+      properties:
+        name:
+          type: string
+        mobile:
+          type: string
+        email:
+          type: string
+          format: email
+        gender:
+          type: string
+        experience:
+          type: integer
+        qualification:
+          type: string
+        specialization_id:
+          type: integer
+        is_active:
+          type: boolean
+    DoctorUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        mobile:
+          type: string
+        email:
+          type: string
+          format: email
+        gender:
+          type: string
+        experience:
+          type: integer
+        qualification:
+          type: string
+        specialization_id:
+          type: integer
+        is_active:
+          type: boolean
+    DoctorResponse:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponse'
+      - type: object
+        properties:
+          name:
+            type: string
+          mobile:
+            type: string
+          email:
+            type: string
+            format: email
+          gender:
+            type: string
+          experience:
+            type: integer
+          qualification:
+            type: string
+          specialization_id:
+            type: integer
+          is_active:
+            type: boolean
+    DoctorListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DoctorResponse'
+    MedicineRequest:
+      type: object
+      required:
+      - name
+      - category
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        manufacturer:
+          type: string
+        strength:
+          type: string
+        price:
+          type: number
+          format: double
+        stock_quantity:
+          type: integer
+        expiry_date:
+          type: string
+          format: date
+        is_active:
+          type: boolean
+    MedicineUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        manufacturer:
+          type: string
+        strength:
+          type: string
+        price:
+          type: number
+          format: double
+        stock_quantity:
+          type: integer
+        expiry_date:
+          type: string
+          format: date
+        is_active:
+          type: boolean
+    MedicineResponse:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponse'
+      - type: object
+        properties:
+          name:
+            type: string
+          category:
+            type: string
+          manufacturer:
+            type: string
+          strength:
+            type: string
+          price:
+            type: number
+            format: double
+          stock_quantity:
+            type: integer
+          expiry_date:
+            type: string
+            format: date
+          is_active:
+            type: boolean
+    MedicineListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MedicineResponse'
+    PatientRequest:
+      type: object
+      required:
+      - first_name
+      - mobile
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        gender:
+          type: string
+        age:
+          type: integer
+        mobile:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+        is_active:
+          type: boolean
+    PatientUpdateRequest:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        gender:
+          type: string
+        age:
+          type: integer
+        mobile:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          type: string
+        is_active:
+          type: boolean
+    PatientResponse:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponse'
+      - type: object
+        properties:
+          first_name:
+            type: string
+          last_name:
+            type: string
+          gender:
+            type: string
+          age:
+            type: integer
+          mobile:
+            type: string
+          email:
+            type: string
+            format: email
+          address:
+            type: string
+          is_active:
+            type: boolean
+    PatientListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientResponse'
+    PrescriptionItemRequest:
+      type: object
+      required:
+      - prescription_id
+      - medicine_name
+      - dosage
+      properties:
+        prescription_id:
+          type: integer
+        medicine_name:
+          type: string
+        dosage:
+          type: string
+        frequency:
+          type: string
+        duration_days:
+          type: integer
+        instructions:
+          type: string
+        is_active:
+          type: boolean
+    PrescriptionItemUpdateRequest:
+      type: object
+      properties:
+        medicine_name:
+          type: string
+        dosage:
+          type: string
+        frequency:
+          type: string
+        duration_days:
+          type: integer
+        instructions:
+          type: string
+        is_active:
+          type: boolean
+    PrescriptionItemResponse:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponse'
+      - type: object
+        properties:
+          prescription_id:
+            type: integer
+          medicine_name:
+            type: string
+          dosage:
+            type: string
+          frequency:
+            type: string
+          duration_days:
+            type: integer
+          instructions:
+            type: string
+          is_active:
+            type: boolean
+    PrescriptionItemListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrescriptionItemResponse'
+    PharmacistRequest:
+      type: object
+      required:
+      - name
+      - mobile
+      properties:
+        name:
+          type: string
+        mobile:
+          type: string
+        email:
+          type: string
+          format: email
+        license_number:
+          type: string
+        experience:
+          type: integer
+        is_active:
+          type: boolean
+    PharmacistUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        mobile:
+          type: string
+        email:
+          type: string
+          format: email
+        license_number:
+          type: string
+        experience:
+          type: integer
+        is_active:
+          type: boolean
+    PharmacistResponse:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponse'
+      - type: object
+        properties:
+          name:
+            type: string
+          mobile:
+            type: string
+          email:
+            type: string
+            format: email
+          license_number:
+            type: string
+          experience:
+            type: integer
+          is_active:
+            type: boolean
+    PharmacistListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PharmacistResponse'
+    PrescriptionRequest:
+      type: object
+      required:
+      - patient_id
+      - doctor_id
+      properties:
+        patient_id:
+          type: integer
+        doctor_id:
+          type: integer
+        diagnosis:
+          type: string
+        notes:
+          type: string
+        is_active:
+          type: boolean
+    PrescriptionUpdateRequest:
+      type: object
+      properties:
+        diagnosis:
+          type: string
+        notes:
+          type: string
+        is_active:
+          type: boolean
+    PrescriptionResponse:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponse'
+      - type: object
+        properties:
+          patient_id:
+            type: integer
+          doctor_id:
+            type: integer
+          diagnosis:
+            type: string
+          notes:
+            type: string
+          is_active:
+            type: boolean
+    PrescriptionListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrescriptionResponse'
+    RoleRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        is_active:
+          type: boolean
+    RoleUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        is_active:
+          type: boolean
+    RoleResponse:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponse'
+      - type: object
+        properties:
+          name:
+            type: string
+          description:
+            type: string
+          is_active:
+            type: boolean
+    RoleListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleResponse'
+    UserRequest:
+      type: object
+      required:
+      - name
+      - email
+      - role_id
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        mobile:
+          type: string
+        role_id:
+          type: integer
+        is_active:
+          type: boolean
+    UserUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        mobile:
+          type: string
+        role_id:
+          type: integer
+        is_active:
+          type: boolean
+    UserResponse:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponse'
+      - type: object
+        properties:
+          name:
+            type: string
+          email:
+            type: string
+            format: email
+          mobile:
+            type: string
+          role_id:
+            type: integer
+          is_active:
+            type: boolean
+    UserListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponse'
+    UserRoleRequest:
+      type: object
+      required:
+      - user_id
+      - role_id
+      properties:
+        user_id:
+          type: integer
+        role_id:
+          type: integer
+        is_active:
+          type: boolean
+    UserRoleUpdateRequest:
+      type: object
+      properties:
+        role_id:
+          type: integer
+        is_active:
+          type: boolean
+    UserRoleResponse:
+      allOf:
+      - $ref: '#/components/schemas/CommonResponse'
+      - type: object
+        properties:
+          user_id:
+            type: integer
+          role_id:
+            type: integer
+          is_active:
+            type: boolean
+    UserRoleListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRoleResponse'
