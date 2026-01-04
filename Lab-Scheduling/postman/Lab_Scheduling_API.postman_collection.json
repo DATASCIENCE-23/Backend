@@ -1,0 +1,453 @@
+{
+  "info": {
+    "name": "Lab Scheduling API",
+    "description": "Comprehensive API collection for Hospital Management System - Laboratory Scheduling Module",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "api_prefix",
+      "value": "/api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "API Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "API Root Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Lab Orders",
+      "item": [
+        {
+          "name": "Create Lab Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient_id\": 1,\n  \"doctor_id\": 1,\n  \"medical_record_id\": 1,\n  \"test_names\": \"Complete Blood Count, Lipid Panel\",\n  \"priority\": \"normal\",\n  \"clinical_notes\": \"Routine annual checkup\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-orders/",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-orders", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Lab Order",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-orders/1",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-orders", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-orders/patient/1",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-orders", "patient", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pending Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-orders/pending",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-orders", "pending"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"scheduled\",\n  \"notes\": \"Appointment scheduled for tomorrow\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-orders/1/status",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-orders", "1", "status"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Lab Scheduling",
+      "item": [
+        {
+          "name": "Create Schedule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": 1,\n  \"technician_id\": 1,\n  \"scheduled_datetime\": \"2024-01-15T10:00:00\",\n  \"sample_type\": \"blood\",\n  \"is_home_collection\": false,\n  \"notes\": \"Patient prefers morning appointments\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-schedule/",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-schedule", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Available Slots",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-schedule/available-slots/2024-01-15",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-schedule", "available-slots", "2024-01-15"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Technician Schedule",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-schedule/technician/1?schedule_date=2024-01-15",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-schedule", "technician", "1"],
+              "query": [
+                {
+                  "key": "schedule_date",
+                  "value": "2024-01-15"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Schedule Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_progress\",\n  \"notes\": \"Sample collection started\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-schedule/1/status",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-schedule", "1", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Home Collections",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-schedule/home-collections/?schedule_date=2024-01-15",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-schedule", "home-collections", ""],
+              "query": [
+                {
+                  "key": "schedule_date",
+                  "value": "2024-01-15"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Lab Results",
+      "item": [
+        {
+          "name": "Create Result",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": 1,\n  \"test_id\": 1,\n  \"result_value\": \"7.2\",\n  \"unit\": \"g/dL\",\n  \"reference_range_min\": 6.0,\n  \"reference_range_max\": 8.0,\n  \"test_name\": \"Hemoglobin\",\n  \"notes\": \"Normal result within reference range\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-results/",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-results", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Result",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-results/1",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-results", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Results by Order",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-results/order/1",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-results", "order", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Result",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"verified_by\": 1,\n  \"verification_notes\": \"Result verified and approved\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-results/1/verify",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-results", "1", "verify"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Abnormal Results",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-results/abnormal/",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-results", "abnormal", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pending Verification",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-results/pending-verification/",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-results", "pending-verification", ""]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Lab Reports",
+      "item": [
+        {
+          "name": "Create Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": 1,\n  \"summary\": \"Complete blood count results\",\n  \"findings\": \"All values within normal limits\",\n  \"recommendations\": \"Continue current health regimen\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-reports/",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-reports", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-reports/1",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-reports", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-reports/patient/1",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-reports", "patient", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Finalize Report",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"finalized_by\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-reports/1/finalize",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-reports", "1", "finalize"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Finalized Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-reports/finalized/",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-reports", "finalized", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Integrate with EMR",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/lab-reports/1/integrate-emr",
+              "host": ["{{base_url}}"],
+              "path": ["{{api_prefix}}", "lab-reports", "1", "integrate-emr"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
