@@ -1,6 +1,5 @@
-
 from sqlalchemy.orm import Session
-from patient_model import Patient
+from Patient_Registration_Management.patient.patient_model import Patient
 
 
 class PatientRepository:
@@ -15,9 +14,7 @@ class PatientRepository:
         return patient
 
     def get_patient_by_id(self, patient_id: int):
-        return self.db.query(Patient).filter(
-            Patient.patient_id == patient_id
-        ).first()
+        return self.db.query(Patient).filter(Patient.patient_id == patient_id).first()
 
     def get_all_patients(self):
         return self.db.query(Patient).all()
@@ -26,10 +23,8 @@ class PatientRepository:
         patient = self.get_patient_by_id(patient_id)
         if not patient:
             return None
-
         for key, value in data.items():
             setattr(patient, key, value)
-
         self.db.commit()
         self.db.refresh(patient)
         return patient
