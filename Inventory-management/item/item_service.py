@@ -40,3 +40,22 @@ def delete_item(db: Session, item_id: int):
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
     repository.delete(db, item)
+    return {"detail": "Item deleted successfully"}
+
+def update_item(db: Session, item_id: int, updated_data):
+    item = repository.get_by_id(db, item_id)
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    # Unique Item Code
+    if 'code' in updated_data:
+        existing_item = repository.get_by_code(db, updated_data['code'])
+        if existing_item and existing_item.id != item_id:
+            raise HTTPException(status_code=400, detail="Item code already exists")
+
+    # If category_id is being updated, check if the new category exists
+    if 'category_id' in updated_data:
+        if not get_category(db, updated_data['category_id']):
+            raise HTTPException(status_code=400, detail="Category does not exist")
+
+    return repository.update(db, item, updated_data)

@@ -6,7 +6,8 @@ from .item_service import (
     create_item,
     get_item,
     list_items,
-    delete_item
+    delete_item,
+    update_item
 )
 
 def add_item(payload: ItemCreate, db: Session = Depends(get_db)):
@@ -20,3 +21,6 @@ def get_all_items(db: Session = Depends(get_db)):
 
 def remove_item(item_id: int, db: Session = Depends(get_db)):
     return delete_item(db, item_id)
+
+def modify_item(item_id: int, updated_data: dict, db: Session = Depends(get_db)):
+    return update_item(db, item_id, updated_data)

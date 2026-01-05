@@ -33,3 +33,21 @@ def add_or_update_stock(db: Session, data):
 
 def list_stock(db: Session):
     return repository.get_all(db)
+
+def get_stock_by_id(db: Session, stock_id: int):
+    stock = repository.get_by_id(db, stock_id)
+    if not stock:
+        raise HTTPException(404, "Stock record not found")
+    return stock
+
+def delete_stock_by_id(db: Session, stock_id: int):
+    stock = repository.get_by_id(db, stock_id)
+    if not stock:
+        raise HTTPException(404, "Stock record not found")
+    return repository.delete(db, stock)
+
+def update_stock(db: Session, item_id: int, location_id: int, updated_data: dict):
+    stock = repository.get_by_item_and_location(db, item_id, location_id)
+    if not stock:
+        raise HTTPException(404, "Stock record not found")
+    return repository.update(db, stock, updated_data)

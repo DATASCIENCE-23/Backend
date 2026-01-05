@@ -19,3 +19,10 @@ def create(db: Session, item: Item):
 def delete(db: Session, item: Item):
     db.delete(item)
     db.commit()
+
+def update(db: Session, item: Item, updated_data: dict):
+    for key, value in updated_data.items():
+        setattr(item, key, value)
+    db.commit()
+    db.refresh(item)
+    return item

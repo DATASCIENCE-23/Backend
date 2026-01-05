@@ -19,6 +19,7 @@ def create(db: Session, category: Category):
 def delete(db: Session, category: Category):
     db.delete(category)
     db.commit()
+    
 
 def update(db: Session, category: Category, updated_data: dict):
     for key, value in updated_data.items():

@@ -38,3 +38,12 @@ def create_issue_request(db: Session, data):
     req.status = "approved"
     db.commit()
     return req
+
+def get_issue_request(db: Session, request_id: int):
+    req = repository.get_request_by_id(db, request_id)
+    if not req:
+        raise HTTPException(404, "Issue request not found")
+    return req
+
+def list_issue_requests(db: Session):
+    return repository.get_all_requests(db)

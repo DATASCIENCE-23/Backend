@@ -24,3 +24,10 @@ def update(db: Session, stock: Stock):
     db.commit()
     db.refresh(stock)
     return stock
+
+def delete(db: Session, stock: Stock):
+    db.delete(stock)
+    db.commit()
+
+def get_by_id(db: Session, stock_id: int):
+    return db.query(Stock).filter(Stock.id == stock_id).first()
