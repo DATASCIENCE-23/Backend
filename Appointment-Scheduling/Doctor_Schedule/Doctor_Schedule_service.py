@@ -82,9 +82,15 @@ class DoctorScheduleService:
         return DoctorScheduleRepository.get_all(db, skip, limit)
 
     @staticmethod
-    def get_doctor_schedules(db: Session, doctor_id: int) -> List[DoctorSchedule]:
+    def get_doctor_schedules(db: Session, doctor_id: int,active_only: bool = False) -> List[DoctorSchedule]:
         """Get all schedules for a doctor"""
-        return DoctorScheduleRepository.get_by_doctor_id(db, doctor_id)
+        query = DoctorScheduleRepository.get_by_doctor(db, doctor_id)
+
+        if active_only:
+            query = [s for s in query if s.is_active]
+
+        return query
+
 
     @staticmethod
     def get_active_doctor_schedules(db: Session, doctor_id: int) -> List[DoctorSchedule]:
