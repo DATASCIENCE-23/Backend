@@ -29,5 +29,13 @@ class MedicalRecordResponse(BaseModel):
     visit_id: Optional[int]
     record_date: datetime
 
+    chief_complaint: Optional[str]
+    history_of_present_illness: Optional[str]
+    past_medical_history: Optional[str]
+    physical_examination: Optional[str]
+    diagnosis: Optional[str]
+    treatment_plan: Optional[str]
+    notes: Optional[str]
+
     class Config:
         from_attributes = True

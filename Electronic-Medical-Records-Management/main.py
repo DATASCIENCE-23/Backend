@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 # Import routers
 from User.User_routes import router as user_router
@@ -11,21 +12,33 @@ from Aud_log.AuditLog_routes import router as AuditLog_routes
 from Report.Report_routes import router as Report_router
 from Prescription_Item.Prescription_Item_routes import router as prescription_item_router
 
-
 app = FastAPI(
     title="Electronic Medical Records API",
     version="1.0.0"
 )
+
+# 🔥 CORS CONFIG (THIS FIXES AXIOS NETWORK ERROR)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # React app
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Register routes
 app.include_router(user_router, prefix="/users", tags=["Users"])
 app.include_router(role_router, prefix="/roles", tags=["Roles"])
 app.include_router(user_role_router, prefix="/user-roles", tags=["User Roles"])
 app.include_router(doctor_router, prefix="/doctors", tags=["Doctors"])
-app.include_router(AuditLog_routes,prefix="/audit-logs", tags=["Audit Logs"])
-app.include_router(Report_router,prefix="/reports", tags=["Reports"])
+app.include_router(AuditLog_routes, prefix="/audit-logs", tags=["Audit Logs"])
+app.include_router(Report_router, prefix="/reports", tags=["Reports"])
+
+# ⚠️ IMPORTANT: these routers ALREADY have their own prefixes
 app.include_router(medical_record_router)
 app.include_router(prescription_router)
 app.include_router(prescription_item_router)
+
 @app.get("/")
 def root():
     return {"status": "EMR Backend running"}
