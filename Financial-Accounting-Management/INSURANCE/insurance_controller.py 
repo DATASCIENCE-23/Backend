@@ -1,0 +1,38 @@
+from flask import jsonify, request
+from services.insurance_service import InsuranceService
+
+
+class InsuranceController:
+    def __init__(self):
+        self.service = InsuranceService()
+
+    def get_all(self):
+        insurances = self.service.get_all_insurances()
+        return jsonify(insurances), 200
+
+    def get(self, insurance_id):
+        insurance = self.service.get_insurance(insurance_id)
+        if insurance:
+            return jsonify(insurance), 200
+        return jsonify({"error": "Insurance not found"}), 404
+
+    def create(self):
+        data = request.get_json()
+        try:
+            insurance = self.service.create_insurance(data)
+            return jsonify(insurance), 201
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
+
+    def update(self, insurance_id):
+        data = request.get_json()
+        insurance = self.service.update_insurance(insurance_id, data)
+        if insurance:
+            return jsonify(insurance), 200
+        return jsonify({"error": "Insurance not found"}), 404
+
+    def delete(self, insurance_id):
+        success = self.service.delete_insurance(insurance_id)
+        if success:
+            return jsonify({"message": "Insurance deleted"}), 200
+        return jsonify({"error": "Insurance not found"}), 404
