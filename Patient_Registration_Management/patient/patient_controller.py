@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
-from patient_service import PatientService
-from patient_repository import PatientRepository
+from Patient_Registration_Management.patient.patient_service import PatientService
+from Patient_Registration_Management.patient.patient_repository import PatientRepository
+
 
 
 class PatientController:

@@ -1,8 +1,7 @@
+# Patient_Registration_Management/doctor/models.py
+
 from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey, DECIMAL
-from sqlalchemy.orm import relationship
 from Patient_Registration_Management.database import Base
-
-
 
 class Doctor(Base):
     __tablename__ = "doctors"
