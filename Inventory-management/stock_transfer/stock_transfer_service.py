@@ -41,7 +41,7 @@ def create_stock_transfer(db: Session, data):
         to_stock.quantity_available += data.quantity
         update_stock(db, to_stock)
     else:
-        from stock.models import Stock
+        from stock.stock_models import Stock
         new_stock = Stock(
             item_id=data.item_id,
             location_id=data.to_location_id,

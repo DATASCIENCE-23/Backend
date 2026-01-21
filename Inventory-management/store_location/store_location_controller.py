@@ -6,7 +6,8 @@ from .store_location_service import (
     create_location,
     get_location,
     list_locations,
-    delete_location
+    delete_location,
+    update_location,
 )
 
 def add_location(payload: StoreLocationCreate, db: Session = Depends(get_db)):

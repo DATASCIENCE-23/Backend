@@ -6,3 +6,6 @@ def create(db: Session, adjustment: StockAdjustment):
     db.commit()
     db.refresh(adjustment)
     return adjustment
+
+def get_all(db: Session):
+    return db.query(StockAdjustment).all()

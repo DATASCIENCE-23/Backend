@@ -18,5 +18,5 @@ class Item(Base):
     minimum_stock_level = Column(Integer, nullable=False)
     expiry_applicable = Column(Boolean, default=False)
 
-    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
+    category_id = Column(Integer, ForeignKey("category.category_id"), nullable=False)
     status = Column(Enum(ItemStatus), default=ItemStatus.active)

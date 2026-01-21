@@ -5,10 +5,10 @@ def get_all(db: Session):
     return db.query(Category).all()
 
 def get_by_id(db: Session, category_id: int):
-    return db.query(Category).filter(Category.id == category_id).first()
+    return db.query(Category).filter(Category.category_id == category_id).first()
 
 def get_by_name(db: Session, name: str):
-    return db.query(Category).filter(Category.name == name).first()
+    return db.query(Category).filter(Category.category_name == name).first()
 
 def create(db: Session, category: Category):
     db.add(category)

@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-
+from fastapi.middleware.cors import CORSMiddleware
+from database import Base, engine
 # ---- Routers ----
 from category.category_routes import router as category_router
 from supplier.supplier_routes import router as supplier_router
@@ -12,10 +13,22 @@ from stock_transfer.stock_transfer_routes import router as transfer_router
 from stock_adjustment.stock_adjustment_routes import router as adjustment_router
 from stock_audit.stock_audit_routes import router as audit_router
 
+# Create the tables
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI(
     title="Hospital Inventory Management System",
     version="1.0.0"
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # ---- Register Routers ----
 app.include_router(category_router)

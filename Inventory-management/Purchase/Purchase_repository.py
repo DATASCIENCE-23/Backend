@@ -12,3 +12,6 @@ def create_purchase_detail(db: Session, detail: PurchaseDetail):
     db.commit()
     db.refresh(detail)
     return detail
+
+def get_all(db: Session):
+    return db.query(Purchase).all()

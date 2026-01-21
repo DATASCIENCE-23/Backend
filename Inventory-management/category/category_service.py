@@ -9,7 +9,7 @@ def create_category(db: Session, data):
         raise HTTPException(status_code=400, detail="Category already exists")
 
     category = Category(
-        name=data.name,
+        category_name=data.name,
         description=data.description
     )
     return repository.create(db, category)
@@ -46,15 +46,21 @@ def delete_category(db: Session, category_id: int):
     return {"detail": "Category deleted successfully"}
 
     
-def update_category(db: Session, category_id: int, updated_data):
+# Inside category_service.py
+
+def update_category(db: Session, category_id: int, updated_data: dict):
     category = repository.get_by_id(db, category_id)
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
 
-    # unique category name
+    # FIX: Map 'name' to 'category_name' manually to match DB column
     if 'name' in updated_data:
+        # Check uniqueness
         existing_category = repository.get_by_name(db, updated_data['name'])
-        if existing_category and existing_category.id != category_id:
-            raise HTTPException(status_code=400, detail="Category name already exists")
+        if existing_category and existing_category.category_id != category_id:
+             raise HTTPException(status_code=400, detail="Category name already exists")
+        
+        # Rename key for the repository
+        updated_data['category_name'] = updated_data.pop('name')
 
     return repository.update(db, category, updated_data)

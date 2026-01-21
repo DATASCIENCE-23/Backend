@@ -6,3 +6,6 @@ def create(db: Session, transfer: StockTransfer):
     db.commit()
     db.refresh(transfer)
     return transfer
+
+def get_all(db: Session):
+    return db.query(StockTransfer).all()

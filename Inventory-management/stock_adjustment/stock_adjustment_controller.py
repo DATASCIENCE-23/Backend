@@ -6,3 +6,8 @@ from .stock_adjustment_service import create_stock_adjustment
 
 def add_stock_adjustment(payload: StockAdjustmentCreate, db: Session = Depends(get_db)):
     return create_stock_adjustment(db, payload)
+
+from .stock_adjustment_repository import get_all # Import the new function
+
+def list_stock_adjustments(db: Session = Depends(get_db)):
+    return get_all(db)
